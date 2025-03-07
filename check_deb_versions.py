@@ -127,9 +127,18 @@ def commit_changes(new_versions):
         else:
             commit_message = "Update Spotify versions"
 
-        # Создаем коммит и отправляем изменения
+        # Создаем коммит
         subprocess.run(["git", "commit", "-m", commit_message])
-        subprocess.run(["git", "push"])
+        
+        if github_actions:
+            token = get_github_token()
+            if token:
+                repo_url = f"https://{token}@github.com/{os.environ.get('GITHUB_REPOSITORY')}.git"
+                subprocess.run(["git", "push", repo_url, "HEAD:main"])
+            else:
+                subprocess.run(["git", "push"])
+        else:
+            subprocess.run(["git", "push"])
 
         print("Изменения успешно отправлены в репозиторий.")
         return True
