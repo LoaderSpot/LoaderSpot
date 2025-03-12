@@ -18,23 +18,26 @@ REPO_UPLOAD = "LoaderSpot/deb-builds"
 
 
 def get_spotify_versions_from_repo():
-    """Получает список доступных версий Spotify из репозитория."""
-    response = requests.get(SPOTIFY_REPO_URL)
-
-    if response.status_code != 200:
-        print(f"Ошибка при запросе: {response.status_code}")
-        return []
+    urls = [
+        "https://repository.spotify.com/dists/testing/non-free/binary-amd64/Packages",
+        SPOTIFY_REPO_URL,
+    ]
 
     version_pattern = r"(\d+\.\d+\.\d+\.\d+\.g[0-9a-f]{8})"
-    versions = re.findall(version_pattern, response.text)
+    versions = set()
 
-    unique_versions = set(versions)
+    for url in urls:
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            found_versions = re.findall(version_pattern, response.text)
+            versions.update(found_versions)
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка при запросе {url}: {e}")
 
     min_version = version.parse("1.1.58")
     return [
-        v
-        for v in unique_versions
-        if version.parse(".".join(v.split(".")[:3])) > min_version
+        v for v in versions if version.parse(".".join(v.split(".")[:3])) > min_version
     ]
 
 
@@ -98,7 +101,7 @@ def update_json_file(sorted_data):
     try:
         with open(VERSIONS_JSON_FILE, "w", encoding="utf-8") as f:
             json.dump(sorted_data, f, indent=2)
-        print(f"Файл {VERSIONS_JSON_FILE} успешно обновлен.")
+        print(f"Файл {VERSIONS_JSON_FILE} успешно обновлен")
         return True
     except Exception as e:
         print(f"Ошибка при обновлении файла {VERSIONS_JSON_FILE}: {e}")
@@ -120,16 +123,16 @@ def commit_changes(new_versions):
         # Формируем сообщение коммита в зависимости от количества новых версий
         if new_versions:
             commit_message = (
-                f"Added version {new_versions[0][0]}"
+                f"Added deb version {new_versions[0][0]}"
                 if len(new_versions) == 1
-                else f"Added versions: {', '.join(v[0] for v in new_versions)}"
+                else f"Added deb versions: {', '.join(v[0] for v in new_versions)}"
             )
         else:
             commit_message = "Update Spotify versions"
 
         # Создаем коммит
         subprocess.run(["git", "commit", "-m", commit_message])
-        
+
         if github_actions:
             token = get_github_token()
             if token:
@@ -140,7 +143,7 @@ def commit_changes(new_versions):
         else:
             subprocess.run(["git", "push"])
 
-        print("Изменения успешно отправлены в репозиторий.")
+        print("Изменения успешно отправлены в репозиторий")
         return True
     except Exception as e:
         print(f"Ошибка при отправке изменений в репозиторий: {e}")
@@ -229,7 +232,7 @@ def main():
     new_versions = find_new_versions(spotify_versions, existing_data)
 
     if not new_versions:
-        print("Новых версий не найдено.")
+        print("Новых версий не найдено")
         return False
 
     print(f"Найдено новых версий: {len(new_versions)}")
@@ -269,7 +272,7 @@ def main():
         # Если мы находимся в GitHub Actions, выполняем коммит
         if os.environ.get("GITHUB_ACTIONS") == "true":
             commit_changes(new_versions)
-        print("Обновление выполнено успешно.")
+        print("Обновление выполнено успешно")
 
     return True
 
