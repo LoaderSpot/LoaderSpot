@@ -22,11 +22,19 @@ async def send_request(json_data):
         async with session.get(url) as response:
             if response.status == 200:
                 data = await response.text()
-                soup = BeautifulSoup(data, "html.parser")
-                system_response = soup.find(
-                    "div",
-                    style="text-align:center;font-family:monospace;margin:50px auto 0;max-width:600px",
-                ).text
+                if "<div" in data:
+                    soup = BeautifulSoup(data, "html.parser")
+                    div_element = soup.find(
+                        "div",
+                        style="text-align:center;font-family:monospace;margin:50px auto 0;max-width:600px",
+                    )
+                    if div_element:
+                        system_response = div_element.text
+                    else:
+                        system_response = "Не удалось извлечь ответ из HTML"
+                else:
+                    system_response = data.strip()
+                
                 print(f"Ответ от GAS: {system_response}")
 
 
