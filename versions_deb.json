@@ -1,4 +1,12 @@
 {
+  "1.2.60.564": {
+    "fullversion": "1.2.60.564.gcc6305cb",
+    "size": "144421884",
+    "data": "07.04.2025",
+    "links": {
+      "amd64": "https://github.com/LoaderSpot/deb-builds/releases/download/builds/spotify-client_1.2.60.564.gcc6305cb_amd64.deb"
+    }
+  },
   "1.2.59.514": {
     "fullversion": "1.2.59.514.g834e17d4",
     "size": "143491584",
