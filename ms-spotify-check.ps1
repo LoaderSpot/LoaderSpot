@@ -46,19 +46,19 @@ function Get-LatestSpotifyVersion {
     $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
     $session.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
 
-    $url = "https://store.rg-adguard.net/api/GetFiles"
+    $url = "https://ru.store.rg-adguard.net/api/GetFiles"
     $body = "type=url&url=https://apps.microsoft.com/detail/9ncbcszsjrsb&gl=US&ring=RP&lang=en"
     $headers = @{
-        "authority"          = "store.rg-adguard.net"
+        "authority"          = "ru.store.rg-adguard.net"
         "method"             = "POST"
         "path"               = "/api/GetFiles"
         "scheme"             = "https"
         "accept"             = "*/*"
         "accept-language"    = "ru,ru-RU;q=0.9,en;q=0.8"
         "dnt"                = "1"
-        "origin"             = "https://store.rg-adguard.net"
+        "origin"             = "https://ru.store.rg-adguard.net"
         "priority"           = "u=1, i"
-        "referer"            = "https://store.rg-adguard.net/"
+        "referer"            = "https://ru.store.rg-adguard.net/"
         "sec-ch-ua"          = '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"'
         "sec-ch-ua-mobile"   = "?0"
         "sec-ch-ua-platform" = '"Windows"'
