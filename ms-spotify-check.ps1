@@ -158,14 +158,13 @@ function Extract-SpotifyAppx {
 
 function Get-SpotifyExeVersion {
     param ($spotifyExePath)
-    Write-Log "Getting version from file $([System.IO.Path]::GetFileName($spotifyExePath))..."
+    Write-Log "Getting version from $([System.IO.Path]::GetFileName($spotifyExePath))..."
     $exeContent = Get-Content -Path $spotifyExePath -Raw
     $regex = '(?<![\w\-])(\d+)\.(\d+)\.(\d+)\.(\d+)(\.g[0-9a-f]{8})(?![\w\-])'
     if ($exeContent -match $regex) {
         Write-Log "Version received successfully: $($matches[0])"
         return $matches[0]
     }
-    Write-Log "Version not found in file $([System.IO.Path]::GetFileName($spotifyExePath))"
     return $null
 }
 
@@ -244,7 +243,7 @@ function Main {
         return
     }
 
-    $spotifyExePath = Get-ChildItem -Path $spotifyTempDir -Filter "Spotify.exe" -Recurse | Select-Object -First 1
+    $spotifyExePath = Get-ChildItem -Path $spotifyTempDir -Filter "Spotify.dll" -Recurse | Select-Object -First 1
     if (-not $spotifyExePath) {
         Write-Log "Spotify.exe not found"
         return
