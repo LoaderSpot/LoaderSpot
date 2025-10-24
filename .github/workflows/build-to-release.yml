@@ -31,7 +31,7 @@ jobs:
         pyinstaller --onefile --clean --name LoaderSpot_${{ matrix.architecture }} LoaderSpot.py
     
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: LoaderSpot_${{ matrix.architecture }}
         path: dist/LoaderSpot_${{ matrix.architecture }}.exe
