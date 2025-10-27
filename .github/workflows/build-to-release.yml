@@ -20,12 +20,11 @@ jobs:
     - uses: actions/checkout@v5
 
     - name: Install Rust toolchain and target
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        profile: minimal
-        override: true
-        target: ${{ matrix.rust_target }}
+      shell: pwsh
+      run: |
+        rustup toolchain install stable --profile minimal
+        rustup target add ${{ matrix.rust_target }}
+        rustup default stable
 
     - name: Build release binary
       env:
@@ -34,7 +33,8 @@ jobs:
       shell: pwsh
       run: |
         # fail on first error
-        Set-PSDebug -Strict
+        $ErrorActionPreference = "Stop"
+        
         # build release for target
         Write-Host "Building target: $env:RUST_TARGET"
         cargo build --manifest-path LoaderSpot_UI/Cargo.toml --release --target $env:RUST_TARGET
@@ -53,15 +53,15 @@ jobs:
           exit 1
         }
 
-        # copy and archive artifact
-        Copy-Item $exe.FullName -Destination "$out\loaderspot_ui_${env:ARCH}.exe" -Force
-        Compress-Archive -Path "$out\loaderspot_ui_${env:ARCH}.exe" -DestinationPath "$out\loaderspot_ui_${env:ARCH}.zip" -Force
+        # copy executable (without archiving)
+        Copy-Item $exe.FullName -Destination "$out\loaderspot_ui_$env:ARCH.exe" -Force
+        Write-Host "Executable ready: $out\loaderspot_ui_$env:ARCH.exe"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v5
       with:
         name: loaderspot_ui_${{ matrix.arch }}
-        path: artifacts/loaderspot_ui_${{ matrix.arch }}.zip
+        path: artifacts/loaderspot_ui_${{ matrix.arch }}.exe
 
     - name: Get latest release
       id: latest_release
@@ -76,7 +76,6 @@ jobs:
             core.setFailed('No releases found for repository');
           }
           return releases.data[0].id;
-        result-encoding: string
 
     - name: Upload to Release
       uses: actions/github-script@v8
@@ -84,12 +83,29 @@ jobs:
         script: |
           const fs = require('fs');
           const releaseId = parseInt('${{ steps.latest_release.outputs.result }}', 10);
-          const path = `artifacts/loaderspot_ui_${{ matrix.arch }}.zip`;
+          const path = `artifacts/loaderspot_ui_${{ matrix.arch }}.exe`;
           const content = fs.readFileSync(path);
+          
+          // Check if asset already exists and delete it
+          const assets = await github.rest.repos.listReleaseAssets({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: releaseId
+          });
+          
+          const existingAsset = assets.data.find(a => a.name === `loaderspot_ui_${{ matrix.arch }}.exe`);
+          if (existingAsset) {
+            await github.rest.repos.deleteReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              asset_id: existingAsset.id
+            });
+          }
+          
           await github.rest.repos.uploadReleaseAsset({
             owner: context.repo.owner,
             repo: context.repo.repo,
             release_id: releaseId,
-            name: `loaderspot_ui_${{ matrix.arch }}.zip`,
+            name: `loaderspot_ui_${{ matrix.arch }}.exe`,
             data: content
           });
