@@ -53,8 +53,9 @@ jobs:
           exit 1
         }
 
-  Copy-Item $exe.FullName -Destination "$out\loaderspot_ui_${env:ARCH}.exe" -Force
-  Compress-Archive -Path "$out\loaderspot_ui_${env:ARCH}.exe" -DestinationPath "$out\loaderspot_ui_${env:ARCH}.zip" -Force
+        # copy and archive artifact
+        Copy-Item $exe.FullName -Destination "$out\loaderspot_ui_${env:ARCH}.exe" -Force
+        Compress-Archive -Path "$out\loaderspot_ui_${env:ARCH}.exe" -DestinationPath "$out\loaderspot_ui_${env:ARCH}.zip" -Force
 
     - name: Upload artifact
       uses: actions/upload-artifact@v5
