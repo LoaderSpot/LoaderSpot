@@ -22,10 +22,10 @@ jobs:
     - name: Install Rust toolchain and target
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: stable
+        toolchain: nightly
         profile: minimal
         override: true
-        targets: ${{ matrix.rust_target }}
+        target: ${{ matrix.rust_target }}
 
     - name: Build release binary
       env:
