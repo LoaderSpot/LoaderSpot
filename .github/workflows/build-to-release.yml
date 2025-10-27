@@ -1,4 +1,4 @@
-name: Build Windows LoaderSpot
+name: Build Windows LoaderSpot UI
 
 on:
   workflow_dispatch:
@@ -8,34 +8,60 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        architecture: [x86, x64]
-    
+        include:
+          - arch: x86
+            rust_target: i686-pc-windows-msvc
+          - arch: x64
+            rust_target: x86_64-pc-windows-msvc
+          - arch: arm64
+            rust_target: aarch64-pc-windows-msvc
+
     steps:
     - uses: actions/checkout@v5
-    
-    - name: Set up Python
-      uses: actions/setup-python@v6
+
+    - name: Install Rust toolchain and target
+      uses: actions-rs/toolchain@v1
       with:
-        python-version: '3.13'
-        architecture: ${{ matrix.architecture }}
-    
-    - name: Install dependencies
+        toolchain: stable
+        profile: minimal
+        override: true
+        targets: ${{ matrix.rust_target }}
+
+    - name: Build release binary
+      env:
+        RUST_TARGET: ${{ matrix.rust_target }}
+        ARCH: ${{ matrix.arch }}
+      shell: pwsh
       run: |
-        python -m pip install --upgrade pip
-        pip install aiohttp
-        pip install tqdm
-        pip install pyinstaller
-    
-    - name: Build executable
-      run: |
-        pyinstaller --onefile --clean --name LoaderSpot_${{ matrix.architecture }} LoaderSpot.py
-    
+        # fail on first error
+        Set-PSDebug -Strict
+        # build release for target
+        Write-Host "Building target: $env:RUST_TARGET"
+        cargo build --manifest-path LoaderSpot_UI/Cargo.toml --release --target $env:RUST_TARGET
+
+        # prepare artifacts folder
+        $out = "artifacts"
+        if (Test-Path $out) { Remove-Item $out -Recurse -Force }
+        New-Item -ItemType Directory -Path $out | Out-Null
+
+        # locate produced executable in target/<target>/release
+        $exePath = Join-Path -Path "LoaderSpot_UI" -ChildPath (Join-Path -Path "target" -ChildPath (Join-Path -Path $env:RUST_TARGET -ChildPath "release"))
+        Write-Host "Searching for exe in: $exePath"
+        $exe = Get-ChildItem -Path $exePath -Filter "*.exe" -File -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $exe) {
+          Write-Error "Executable not found in $exePath"
+          exit 1
+        }
+
+  Copy-Item $exe.FullName -Destination "$out\loaderspot_ui_${env:ARCH}.exe" -Force
+  Compress-Archive -Path "$out\loaderspot_ui_${env:ARCH}.exe" -DestinationPath "$out\loaderspot_ui_${env:ARCH}.zip" -Force
+
     - name: Upload artifact
       uses: actions/upload-artifact@v5
       with:
-        name: LoaderSpot_${{ matrix.architecture }}
-        path: dist/LoaderSpot_${{ matrix.architecture }}.exe
-    
+        name: loaderspot_ui_${{ matrix.arch }}
+        path: artifacts/loaderspot_ui_${{ matrix.arch }}.zip
+
     - name: Get latest release
       id: latest_release
       uses: actions/github-script@v8
@@ -45,20 +71,24 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo
           });
+          if (!releases.data || releases.data.length === 0) {
+            core.setFailed('No releases found for repository');
+          }
           return releases.data[0].id;
         result-encoding: string
-    
+
     - name: Upload to Release
       uses: actions/github-script@v8
       with:
         script: |
           const fs = require('fs');
-          const releaseId = ${{ steps.latest_release.outputs.result }};
-          
+          const releaseId = parseInt('${{ steps.latest_release.outputs.result }}', 10);
+          const path = `artifacts/loaderspot_ui_${{ matrix.arch }}.zip`;
+          const content = fs.readFileSync(path);
           await github.rest.repos.uploadReleaseAsset({
             owner: context.repo.owner,
             repo: context.repo.repo,
             release_id: releaseId,
-            name: `LoaderSpot_${{ matrix.architecture }}.exe`,
-            data: fs.readFileSync(`dist/LoaderSpot_${{ matrix.architecture }}.exe`)
+            name: `loaderspot_ui_${{ matrix.arch }}.zip`,
+            data: content
           });
