@@ -4,6 +4,7 @@ import json
 import re
 import argparse
 from bs4 import BeautifulSoup
+import urllib.parse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-v", required=True)
@@ -17,7 +18,7 @@ u = args.u
 
 
 async def send_request(json_data):
-    url = u + json_data
+    url = u + urllib.parse.quote(json_data)
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             if response.status == 200:
