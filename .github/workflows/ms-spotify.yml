@@ -2,7 +2,7 @@ name: check Spotify MS
 
 on:
   schedule:
-    - cron: '25 * * * *'
+    - cron: '0 */5 * * *'
   workflow_dispatch:
 
 jobs:
