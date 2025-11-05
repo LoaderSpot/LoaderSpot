@@ -378,11 +378,9 @@ async fn send_to_gas(
     gas_url: &str,
     data: HashMap<String, String>,
 ) {
-    let json_data = serde_json::to_string(&data).unwrap();
-    let encoded_json = urlencoding::encode(&json_data);
-    let url = format!("{}{}", gas_url, encoded_json);
+    let cleaned_gas_url = gas_url.trim_matches('"');
 
-    match client.get(&url).send().await {
+    match client.post(cleaned_gas_url).json(&data).send().await {
         Ok(response) => {
             if response.status().is_success() {
                 match response.text().await {
@@ -393,7 +391,8 @@ async fn send_to_gas(
                             if let Some(div) = soup.select(&selector).next() {
                                 println!("Ответ от GAS: {}", div.text().collect::<String>().trim());
                             } else {
-                                println!("Не удалось извлечь ответ из HTML");
+                                eprintln!("Не удалось извлечь ответ из HTML. Полный ответ:");
+                                eprintln!("{}", text);
                             }
                         } else {
                              println!("Ответ от GAS: {}", text.trim());
