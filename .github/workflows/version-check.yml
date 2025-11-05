@@ -15,14 +15,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.2
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
 
-      - name: Install dependencies
-        run: |
-          pip install aiohttp beautifulsoup4 argparse
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            LoaderSpot_CLI/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('LoaderSpot_CLI/Cargo.lock') }}
+
+      - name: Build LoaderSpot_CLI
+        run: cd LoaderSpot_CLI && cargo build --release
 
       - name: Version search
-        run: python ${{ github.workspace }}/upd.py -v ${{ github.event.client_payload.v }} -s "${{ github.event.client_payload.s }}" -u "${{ secrets.GOOGLE_APPS_URL }}"
+        run: ${{ github.workspace }}/LoaderSpot_CLI/target/release/loaderspot_cli --version "${{ github.event.client_payload.v }}" --source "${{ github.event.client_payload.s }}" --gas-url "${{ secrets.GOOGLE_APPS_URL }}" --connections 300
