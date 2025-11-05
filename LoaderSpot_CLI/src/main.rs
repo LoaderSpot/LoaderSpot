@@ -8,7 +8,6 @@ use std::time::Duration;
 use tokio::sync::Semaphore;
 use regex::Regex;
 use scraper::{Html, Selector};
-use urlencoding;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 enum PlatformArch {
