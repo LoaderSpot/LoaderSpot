@@ -380,7 +380,7 @@ async fn send_to_gas(
 ) {
     let json_data = serde_json::to_string(&data).unwrap();
     let encoded_json = urlencoding::encode(&json_data);
-    let url = format!("{}?text={}", gas_url, encoded_json);
+    let url = format!("{}{}", gas_url, encoded_json);
 
     match client.get(&url).send().await {
         Ok(response) => {
