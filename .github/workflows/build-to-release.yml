@@ -66,56 +66,34 @@ jobs:
 
   build_linux:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - arch: x64
-            rust_target: x86_64-unknown-linux-gnu
-          - arch: arm64
-            rust_target: aarch64-unknown-linux-gnu
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install Rust toolchain and target
+      - name: Install Rust toolchain
         run: |
           rustup toolchain install stable --profile minimal
-          rustup target add ${{ matrix.rust_target }}
           rustup default stable
       
-      - name: Install cross-compilation tools
+      - name: Install build dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libssl-dev
-          
-          if [ "${{ matrix.rust_target }}" = "aarch64-unknown-linux-gnu" ]; then
-            sudo dpkg --add-architecture arm64
-            sudo apt-get update
-            sudo apt-get install -y gcc-aarch64-linux-gnu libssl-dev:arm64
-          fi
 
       - name: Build release binary
-        env:
-          RUST_TARGET: ${{ matrix.rust_target }}
-          ARCH: ${{ matrix.arch }}
         run: |
-          # Set linker for cross-compilation
-          if [ "$RUST_TARGET" = "aarch64-unknown-linux-gnu" ]; then
-            export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
-          fi
-          
           mkdir -p artifacts
           
-          # build CLI
-          echo "Building CLI for target: $RUST_TARGET"
-          cargo build --manifest-path LoaderSpot_CLI/Cargo.toml --release --target $RUST_TARGET
-          cp "LoaderSpot_CLI/target/$RUST_TARGET/release/loaderspot_cli" "artifacts/loaderspot_cli_linux_$ARCH"
-          echo "CLI executable ready: artifacts/loaderspot_cli_linux_$ARCH"
+          # build CLI for x86_64
+          echo "Building CLI for target: x86_64-unknown-linux-gnu"
+          cargo build --manifest-path LoaderSpot_CLI/Cargo.toml --release --target x86_64-unknown-linux-gnu
+          cp "LoaderSpot_CLI/target/x86_64-unknown-linux-gnu/release/loaderspot_cli" "artifacts/loaderspot_cli_linux_x64"
+          echo "CLI executable ready: artifacts/loaderspot_cli_linux_x64"
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v5
         with:
-          name: linux-artifacts-${{ matrix.arch }}
-          path: artifacts/loaderspot_cli_linux_${{ matrix.arch }}
+          name: linux-artifacts-x64
+          path: artifacts/loaderspot_cli_linux_x64
 
   release:
     needs: [build_windows, build_linux]
