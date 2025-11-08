@@ -19,12 +19,22 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - name: Install Rust toolchain and target
-      shell: pwsh
-      run: |
-        rustup toolchain install stable --profile minimal
-        rustup target add ${{ matrix.rust_target }}
-        rustup default stable
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: ${{ matrix.rust_target }}
+
+    - name: Cache cargo dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          LoaderSpot_UI/target
+          LoaderSpot_CLI/target
+        key: ${{ runner.os }}-cargo-${{ matrix.rust_target }}-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-${{ matrix.rust_target }}-
 
     - name: Build release binaries
       env:
@@ -32,37 +42,29 @@ jobs:
         ARCH: ${{ matrix.arch }}
       shell: pwsh
       run: |
-        # fail on first error
         $ErrorActionPreference = "Stop"
         
-        # prepare artifacts folder
         $out = "artifacts"
         if (Test-Path $out) { Remove-Item $out -Recurse -Force }
         New-Item -ItemType Directory -Path $out | Out-Null
         
-        # build UI
-        Write-Host "Building UI for target: $env:RUST_TARGET"
+        Write-Host "Building UI for $env:RUST_TARGET"
         cargo build --manifest-path LoaderSpot_UI/Cargo.toml --release --target $env:RUST_TARGET
-        $exePathUI = Join-Path -Path "LoaderSpot_UI" -ChildPath (Join-Path -Path "target" -ChildPath (Join-Path -Path $env:RUST_TARGET -ChildPath "release"))
-        $exeUI = Get-ChildItem -Path $exePathUI -Filter "*.exe" -File | Select-Object -First 1
-        Copy-Item $exeUI.FullName -Destination "$out\loaderspot_ui_$env:ARCH.exe" -Force
-        Write-Host "UI executable ready: $out\loaderspot_ui_$env:ARCH.exe"
-
-        # build CLI
-        Write-Host "Building CLI for target: $env:RUST_TARGET"
+        $exeUI = Get-ChildItem "LoaderSpot_UI/target/$env:RUST_TARGET/release/*.exe" | Select-Object -First 1
+        Copy-Item $exeUI.FullName "$out\loaderspot-ui-win-$env:ARCH.exe"
+        Write-Host "UI executable ready: loaderspot-ui-win-$env:ARCH.exe"
+        
+        Write-Host "Building CLI for $env:RUST_TARGET"
         cargo build --manifest-path LoaderSpot_CLI/Cargo.toml --release --target $env:RUST_TARGET
-        $exePathCLI = Join-Path -Path "LoaderSpot_CLI" -ChildPath (Join-Path -Path "target" -ChildPath (Join-Path -Path $env:RUST_TARGET -ChildPath "release"))
-        $exeCLI = Get-ChildItem -Path $exePathCLI -Filter "*.exe" -File | Select-Object -First 1
-        Copy-Item $exeCLI.FullName -Destination "$out\loaderspot_cli_$env:ARCH.exe" -Force
-        Write-Host "CLI executable ready: $out\loaderspot_cli_$env:ARCH.exe"
+        $exeCLI = Get-ChildItem "LoaderSpot_CLI/target/$env:RUST_TARGET/release/*.exe" | Select-Object -First 1
+        Copy-Item $exeCLI.FullName "$out\loaderspot-cli-win-$env:ARCH.exe"
+        Write-Host "CLI executable ready: loaderspot-cli-win-$env:ARCH.exe"
 
     - name: Upload Windows artifacts
       uses: actions/upload-artifact@v5
       with:
         name: windows-artifacts-${{ matrix.arch }}
-        path: |
-          artifacts/loaderspot_ui_${{ matrix.arch }}.exe
-          artifacts/loaderspot_cli_${{ matrix.arch }}.exe
+        path: artifacts/*
 
   build_linux:
     runs-on: ubuntu-latest
@@ -70,34 +72,56 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Install Rust toolchain
-        run: |
-          rustup toolchain install stable --profile minimal
-          rustup default stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-gnu
+
+      - name: Cache cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            LoaderSpot_UI/target
+            LoaderSpot_CLI/target
+          key: ${{ runner.os }}-cargo-x86_64-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-x86_64-
       
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y pkg-config libssl-dev
+          sudo apt-get install -y pkg-config libssl-dev \
+            libgtk-3-dev libwebkit2gtk-4.0-dev \
+            libayatana-appindicator3-dev librsvg2-dev
 
-      - name: Build release binary
+      - name: Build release binaries
         run: |
           mkdir -p artifacts
           
-          # build CLI for x86_64
-          echo "Building CLI for target: x86_64-unknown-linux-gnu"
+          # Build UI for Linux
+          echo "Building UI for x86_64-unknown-linux-gnu"
+          cargo build --manifest-path LoaderSpot_UI/Cargo.toml --release --target x86_64-unknown-linux-gnu
+          cp "LoaderSpot_UI/target/x86_64-unknown-linux-gnu/release/loaderspot_ui" "artifacts/loaderspot-ui-linux-x64"
+          echo "UI executable ready: loaderspot-ui-linux-x64"
+          
+          # Build CLI for Linux
+          echo "Building CLI for x86_64-unknown-linux-gnu"
           cargo build --manifest-path LoaderSpot_CLI/Cargo.toml --release --target x86_64-unknown-linux-gnu
-          cp "LoaderSpot_CLI/target/x86_64-unknown-linux-gnu/release/loaderspot_cli" "artifacts/loaderspot_cli_linux_x64"
-          echo "CLI executable ready: artifacts/loaderspot_cli_linux_x64"
+          cp "LoaderSpot_CLI/target/x86_64-unknown-linux-gnu/release/loaderspot_cli" "artifacts/loaderspot-cli-linux-x64"
+          echo "CLI executable ready: loaderspot-cli-linux-x64"
 
-      - name: Upload Linux artifact
+      - name: Upload Linux artifacts
         uses: actions/upload-artifact@v5
         with:
           name: linux-artifacts-x64
-          path: artifacts/loaderspot_cli_linux_x64
+          path: artifacts/*
 
   release:
     needs: [build_windows, build_linux]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -109,14 +133,15 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            const releases = await github.rest.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
-            if (!releases.data || releases.data.length === 0) {
-              core.setFailed('No releases found for repository');
+            try {
+              const release = await github.rest.repos.getLatestRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo
+              });
+              return release.data.id;
+            } catch (error) {
+              core.setFailed(`No releases found: ${error.message}`);
             }
-            return releases.data[0].id;
 
       - name: Upload assets to Release
         uses: actions/github-script@v8
@@ -146,7 +171,7 @@ jobs:
                 });
               }
               
-              console.log(`Uploading new asset: ${fileName}`);
+              console.log(`Uploading: ${fileName}`);
               await github.rest.repos.uploadReleaseAsset({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -156,10 +181,17 @@ jobs:
               });
             }
 
+            const files = [];
             const artifactDirs = fs.readdirSync('artifacts');
             for (const dir of artifactDirs) {
-              const files = fs.readdirSync(path.join('artifacts', dir));
-              for (const file of files) {
-                await uploadAsset(path.join('artifacts', dir, file));
+              const dirPath = path.join('artifacts', dir);
+              const dirFiles = fs.readdirSync(dirPath);
+              for (const file of dirFiles) {
+                files.push(path.join(dirPath, file));
               }
+            }
+            
+            for (let i = 0; i < files.length; i += 3) {
+              const batch = files.slice(i, i + 3);
+              await Promise.all(batch.map(uploadAsset));
             }
