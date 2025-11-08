@@ -1,10 +1,10 @@
-name: Build Windows LoaderSpot UI
+name: Build LoaderSpot 
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build_windows:
     runs-on: windows-latest
     strategy:
       matrix:
@@ -26,7 +26,7 @@ jobs:
         rustup target add ${{ matrix.rust_target }}
         rustup default stable
 
-    - name: Build release binary
+    - name: Build release binaries
       env:
         RUST_TARGET: ${{ matrix.rust_target }}
         ARCH: ${{ matrix.arch }}
@@ -35,77 +35,149 @@ jobs:
         # fail on first error
         $ErrorActionPreference = "Stop"
         
-        # build release for target
-        Write-Host "Building target: $env:RUST_TARGET"
-        cargo build --manifest-path LoaderSpot_UI/Cargo.toml --release --target $env:RUST_TARGET
-
         # prepare artifacts folder
         $out = "artifacts"
         if (Test-Path $out) { Remove-Item $out -Recurse -Force }
         New-Item -ItemType Directory -Path $out | Out-Null
+        
+        # build UI
+        Write-Host "Building UI for target: $env:RUST_TARGET"
+        cargo build --manifest-path LoaderSpot_UI/Cargo.toml --release --target $env:RUST_TARGET
+        $exePathUI = Join-Path -Path "LoaderSpot_UI" -ChildPath (Join-Path -Path "target" -ChildPath (Join-Path -Path $env:RUST_TARGET -ChildPath "release"))
+        $exeUI = Get-ChildItem -Path $exePathUI -Filter "*.exe" -File | Select-Object -First 1
+        Copy-Item $exeUI.FullName -Destination "$out\loaderspot_ui_$env:ARCH.exe" -Force
+        Write-Host "UI executable ready: $out\loaderspot_ui_$env:ARCH.exe"
 
-        # locate produced executable in target/<target>/release
-        $exePath = Join-Path -Path "LoaderSpot_UI" -ChildPath (Join-Path -Path "target" -ChildPath (Join-Path -Path $env:RUST_TARGET -ChildPath "release"))
-        Write-Host "Searching for exe in: $exePath"
-        $exe = Get-ChildItem -Path $exePath -Filter "*.exe" -File -ErrorAction SilentlyContinue | Select-Object -First 1
-        if (-not $exe) {
-          Write-Error "Executable not found in $exePath"
-          exit 1
-        }
+        # build CLI
+        Write-Host "Building CLI for target: $env:RUST_TARGET"
+        cargo build --manifest-path LoaderSpot_CLI/Cargo.toml --release --target $env:RUST_TARGET
+        $exePathCLI = Join-Path -Path "LoaderSpot_CLI" -ChildPath (Join-Path -Path "target" -ChildPath (Join-Path -Path $env:RUST_TARGET -ChildPath "release"))
+        $exeCLI = Get-ChildItem -Path $exePathCLI -Filter "*.exe" -File | Select-Object -First 1
+        Copy-Item $exeCLI.FullName -Destination "$out\loaderspot_cli_$env:ARCH.exe" -Force
+        Write-Host "CLI executable ready: $out\loaderspot_cli_$env:ARCH.exe"
 
-        # copy executable (without archiving)
-        Copy-Item $exe.FullName -Destination "$out\loaderspot_ui_$env:ARCH.exe" -Force
-        Write-Host "Executable ready: $out\loaderspot_ui_$env:ARCH.exe"
-
-    - name: Upload artifact
+    - name: Upload Windows artifacts
       uses: actions/upload-artifact@v5
       with:
-        name: loaderspot_ui_${{ matrix.arch }}
-        path: artifacts/loaderspot_ui_${{ matrix.arch }}.exe
+        name: windows-artifacts-${{ matrix.arch }}
+        path: |
+          artifacts/loaderspot_ui_${{ matrix.arch }}.exe
+          artifacts/loaderspot_cli_${{ matrix.arch }}.exe
 
-    - name: Get latest release
-      id: latest_release
-      uses: actions/github-script@v8
-      with:
-        script: |
-          const releases = await github.rest.repos.listReleases({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
-          if (!releases.data || releases.data.length === 0) {
-            core.setFailed('No releases found for repository');
-          }
-          return releases.data[0].id;
+  build_linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            rust_target: x86_64-unknown-linux-gnu
+          - arch: arm64
+            rust_target: aarch64-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v5
 
-    - name: Upload to Release
-      uses: actions/github-script@v8
-      with:
-        script: |
-          const fs = require('fs');
-          const releaseId = parseInt('${{ steps.latest_release.outputs.result }}', 10);
-          const path = `artifacts/loaderspot_ui_${{ matrix.arch }}.exe`;
-          const content = fs.readFileSync(path);
+      - name: Install Rust toolchain and target
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup target add ${{ matrix.rust_target }}
+          rustup default stable
+      
+      - name: Install cross-compilation tools
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.rust_target }}" = "aarch64-unknown-linux-gnu" ]; then
+            sudo apt-get install -y gcc-aarch64-linux-gnu
+          fi
+
+      - name: Build release binary
+        env:
+          RUST_TARGET: ${{ matrix.rust_target }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          # Set linker for cross-compilation
+          if [ "$RUST_TARGET" = "aarch64-unknown-linux-gnu" ]; then
+            export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
+          fi
           
-          // Check if asset already exists and delete it
-          const assets = await github.rest.repos.listReleaseAssets({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            release_id: releaseId
-          });
+          mkdir -p artifacts
           
-          const existingAsset = assets.data.find(a => a.name === `loaderspot_ui_${{ matrix.arch }}.exe`);
-          if (existingAsset) {
-            await github.rest.repos.deleteReleaseAsset({
+          # build CLI
+          echo "Building CLI for target: $RUST_TARGET"
+          cargo build --manifest-path LoaderSpot_CLI/Cargo.toml --release --target $RUST_TARGET
+          cp "LoaderSpot_CLI/target/$RUST_TARGET/release/loaderspot_cli" "artifacts/loaderspot_cli_linux_$ARCH"
+          echo "CLI executable ready: artifacts/loaderspot_cli_linux_$ARCH"
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: linux-artifacts-${{ matrix.arch }}
+          path: artifacts/loaderspot_cli_linux_${{ matrix.arch }}
+
+  release:
+    needs: [build_windows, build_linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Get latest release
+        id: latest_release
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const releases = await github.rest.repos.listReleases({
               owner: context.repo.owner,
-              repo: context.repo.repo,
-              asset_id: existingAsset.id
+              repo: context.repo.repo
             });
-          }
-          
-          await github.rest.repos.uploadReleaseAsset({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            release_id: releaseId,
-            name: `loaderspot_ui_${{ matrix.arch }}.exe`,
-            data: content
-          });
+            if (!releases.data || releases.data.length === 0) {
+              core.setFailed('No releases found for repository');
+            }
+            return releases.data[0].id;
+
+      - name: Upload assets to Release
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const releaseId = parseInt('${{ steps.latest_release.outputs.result }}', 10);
+
+            async function uploadAsset(filePath) {
+              const fileName = path.basename(filePath);
+              console.log(`Processing ${fileName}`);
+              
+              const assets = await github.rest.repos.listReleaseAssets({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: releaseId
+              });
+              
+              const existingAsset = assets.data.find(a => a.name === fileName);
+              if (existingAsset) {
+                console.log(`Deleting existing asset: ${fileName}`);
+                await github.rest.repos.deleteReleaseAsset({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  asset_id: existingAsset.id
+                });
+              }
+              
+              console.log(`Uploading new asset: ${fileName}`);
+              await github.rest.repos.uploadReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: releaseId,
+                name: fileName,
+                data: fs.readFileSync(filePath)
+              });
+            }
+
+            const artifactDirs = fs.readdirSync('artifacts');
+            for (const dir of artifactDirs) {
+              const files = fs.readdirSync(path.join('artifacts', dir));
+              for (const file of files) {
+                await uploadAsset(path.join('artifacts', dir, file));
+              }
+            }
