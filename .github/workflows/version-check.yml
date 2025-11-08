@@ -19,7 +19,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download --repo ${{ github.repository }} --pattern "loaderspot_cli_linux_x64" --output loaderspot_cli
+          gh release download --repo ${{ github.repository }} --pattern "loaderspot-cli-linux-x64" --output loaderspot_cli
           chmod +x loaderspot_cli
 
       - name: Version search
