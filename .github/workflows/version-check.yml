@@ -15,22 +15,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Cargo dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            LoaderSpot_CLI/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('LoaderSpot_CLI/Cargo.lock') }}
-
-      - name: Build LoaderSpot_CLI
-        run: cd LoaderSpot_CLI && cargo build --release
+      - name: Download latest loaderspot_cli_linux_x64
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download --repo ${{ github.repository }} --pattern "loaderspot_cli_linux_x64" --output loaderspot_cli
+          chmod +x loaderspot_cli
 
       - name: Version search
-        run: ${{ github.workspace }}/LoaderSpot_CLI/target/release/loaderspot_cli --version "${{ github.event.client_payload.v }}" --source "${{ github.event.client_payload.s }}" --gas-url "${{ secrets.GOOGLE_APPS_URL }}" --connections 300
+        if: github.event.client_payload.v && github.event.client_payload.s
+        env:
+          v: ${{ github.event.client_payload.v }}
+          s: ${{ github.event.client_payload.s }}
+          g: ${{ secrets.GOOGLE_APPS_URL }}
+        run: ./loaderspot_cli --version "$v" --source "$s" --gas-url "$g" --connections 300
