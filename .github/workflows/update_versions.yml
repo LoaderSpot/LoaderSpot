@@ -28,7 +28,7 @@ jobs:
 
     - name: Update versions.json
       env:
-        DATA_JSON: ${{ github.event.inputs.datajson }}
+        DATA_JSON: ${{ toJSON(github.event.inputs.datajson) }}
       run: |
         python3 update_versions.py
 
