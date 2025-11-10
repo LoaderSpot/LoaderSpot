@@ -220,7 +220,7 @@ async fn main() {
     let connections = cli.connections.clamp(50, 300);
     let range = cli.range.clone();
     let client = Client::builder()
-        .timeout(std::time::Duration::from_secs(10))
+        .timeout(std::time::Duration::from_secs(30))
         .build()
         .unwrap();
 
@@ -377,6 +377,7 @@ async fn send_to_gas(
     gas_url: &str,
     data: HashMap<String, String>,
 ) {
+    const GAS_ERROR_PREFIX: &str = "Ошибка при отправке в GAS:";
     let cleaned_gas_url = gas_url.trim_matches('"');
 
     match client.post(cleaned_gas_url).json(&data).send().await {
@@ -400,9 +401,16 @@ async fn send_to_gas(
                     Err(e) => eprintln!("Ошибка чтения ответа от GAS: {}", e),
                 }
             } else {
-                eprintln!("Ошибка при отправке в GAS: {}", response.status());
+                eprintln!("{} {}", GAS_ERROR_PREFIX, response.status());
             }
         }
-        Err(e) => eprintln!("Ошибка при отправке запроса в GAS: {}", e),
+        Err(e) => {
+            let error_message = e.to_string();
+            if let Some(index) = error_message.find(" for url (") {
+                eprintln!("{} {}", GAS_ERROR_PREFIX, &error_message[..index]);
+            } else {
+                eprintln!("{} {}", GAS_ERROR_PREFIX, error_message);
+            }
+        }
     }
 }

@@ -26,10 +26,9 @@ jobs:
       with:
         python-version: 3.12.2
 
-    - name: Update version in versions.json
+    - name: Update versions.json
       run: |
-        data="${{ github.event.inputs.datajson }}"
-        python3 -c "import json, re; data=json.loads('$data'); file_data=json.load(open('versions.json')); file_data[list(data.keys())[0]] = data[list(data.keys())[0]]; file_data = dict(sorted(file_data.items(), key=lambda x: [int(part) if part.isdigit() else part for part in re.split(r'(\d+)', x[0])], reverse=True)); json.dump(file_data, open('versions.json', 'w'), indent=2)"
+        python3 update_versions.py
 
     - name: Commit changes
       run: |
