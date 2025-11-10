@@ -27,9 +27,8 @@ jobs:
         python-version: 3.12.2
 
     - name: Update versions.json
-      env:
-        DATA_JSON: ${{ github.event.inputs.datajson }}
       run: |
+        echo '${{ github.event.inputs.datajson }}' > temp_data.json
         python3 update_versions.py
 
     - name: Commit changes

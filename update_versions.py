@@ -1,11 +1,7 @@
 import json
 import re
-import os
-
-data_json = os.environ.get("DATA_JSON")
-if not data_json:
-    raise ValueError("DATA_JSON environment variable not set")
-data = json.loads(data_json)
+with open('temp_data.json', 'r') as f:
+    data = json.load(f)
 
 with open('versions.json', 'r') as f:
     file_data = json.load(f)
