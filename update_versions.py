@@ -1,7 +1,10 @@
 import json
 import re
+import os
 
-data_json = "${{ github.event.inputs.datajson }}"
+data_json = os.environ.get("DATA_JSON")
+if not data_json:
+    raise ValueError("DATA_JSON environment variable not set")
 data = json.loads(data_json)
 
 with open('versions.json', 'r') as f:
