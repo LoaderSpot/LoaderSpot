@@ -27,7 +27,9 @@ jobs:
         python-version: 3.12.2
 
     - name: Update version in versions.json
-      run: python3 update_version.py '${{ github.event.inputs.datajson }}'
+      run: |
+        data="${{ github.event.inputs.datajson }}"
+        python3 update_version.py "$data"
 
     - name: Commit changes
       run: |

@@ -28,14 +28,23 @@ def update_version(data_json: str, version_file: str = "versions.json") -> bool:
         with open(version_file, 'w', encoding='utf-8') as f:
             json.dump(sorted_data, f, indent=2)
         
+        print(f"Version {version_key} added to {version_file}")
         return True
         
-    except:
+    except json.JSONDecodeError as e:
+        print(f"JSON parse error: {e}", file=sys.stderr)
+        return False
+    except FileNotFoundError:
+        print(f"File {version_file} not found", file=sys.stderr)
+        return False
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
         return False
 
 
 def main():
     if len(sys.argv) < 2:
+        print("Usage: python update_version.py '<json_data>' [version_file]", file=sys.stderr)
         sys.exit(1)
     
     data_json = sys.argv[1]
