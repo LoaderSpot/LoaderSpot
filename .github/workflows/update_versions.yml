@@ -17,19 +17,17 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v4
       with:
         token: ${{ secrets.PERSONAL_TOKEN }}
 
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v5
       with:
         python-version: 3.12.2
 
-    - name: Update versions.json
-      run: |
-        echo '${{ github.event.inputs.datajson }}' > temp_data.json
-        python3 update_versions.py
+    - name: Update version in versions.json
+      run: python3 update_version.py '${{ github.event.inputs.datajson }}'
 
     - name: Commit changes
       run: |
