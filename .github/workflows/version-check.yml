@@ -56,7 +56,7 @@ jobs:
           if ($win64Url) {
             ./get-build-info.ps1 -Url $win64Url
           } else {
-            echo "::set-output name=build_type::false"
+            "build_type=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           }
 
   send-to-gas:

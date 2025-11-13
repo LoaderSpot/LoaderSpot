@@ -22,25 +22,28 @@ function Find-BuildInfo {
                     $buildType = $match.Groups[1].Value
                     Write-Output "Тип билда: $buildType"
                     $found = $true
-                    echo "::set-output name=build_type::$buildType"
+                    # Записываем вывод в файл окружения
+                    "build_type=$buildType" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+                    # Прерываем цикл после первого найденного совпадения
                     break
                 }
             }
 
             if (-not $found) {
                 Write-Output "Билд не найден"
-                echo "::set-output name=build_type::false"
+                "build_type=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
             }
         }
         catch {
             Write-Error "Ошибка при чтении файла: $_"
-            echo "::set-output name=build_type::false"
+            "build_type=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
         }
     }
 }
 
 function Download-And-Unpack-Spotify {
     [CmdletBinding()]
+    # Параметр $Url теперь передается из области видимости скрипта
     
     $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) "spotify"
     $destinationPath = Join-Path $tempPath "unpacked"
@@ -72,12 +75,12 @@ function Download-And-Unpack-Spotify {
         }
         else {
             Write-Error "Файлы Spotify.dll и Spotify.exe не найдены в $destinationPath"
-            echo "::set-output name=build_type::false"
+            "build_type=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
         }
     }
     catch {
         Write-Error "Произошла ошибка: $_"
-        echo "::set-output name=build_type::false"
+        "build_type=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
     }
 }
 
@@ -86,5 +89,5 @@ if (-not [string]::IsNullOrEmpty($Url)) {
     Download-And-Unpack-Spotify
 } else {
     Write-Error "URL не был предоставлен."
-    echo "::set-output name=build_type::false"
+    "build_type=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 }
