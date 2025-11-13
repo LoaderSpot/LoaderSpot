@@ -8,9 +8,10 @@ concurrency:
   cancel-in-progress: false    
 
 jobs:
-  build:
+  version-search:
     runs-on: ubuntu-latest
-
+    outputs:
+      versions: ${{ steps.search.outputs.versions }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -23,9 +24,72 @@ jobs:
           chmod +x loaderspot_cli
 
       - name: Version search
+        id: search
         if: github.event.client_payload.v && github.event.client_payload.s
         env:
           v: ${{ github.event.client_payload.v }}
           s: ${{ github.event.client_payload.s }}
+        run: |
+          json_output=$(./loaderspot_cli --version "$v" --connections 300 --ladder-search)
+          echo "versions=$json_output" >> $GITHUB_OUTPUT
+
+  get-build-type:
+    runs-on: windows-latest
+    needs: version-search
+    if: success() && needs.version-search.outputs.versions
+    continue-on-error: true
+    outputs:
+      build_type: ${{ steps.get_build_type.outputs.build_type }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Get Win64 URL and determine build type
+        id: get_build_type
+        shell: pwsh
+        run: |
+          $versionsJson = '${{ needs.version-search.outputs.versions }}' | ConvertFrom-Json
+          $win64Url = $versionsJson.WIN64
+          if ($win64Url) {
+            ./get-build-info.ps1 -Url $win64Url
+          } else {
+            echo "::set-output name=build_type::false"
+          }
+
+  send-to-gas:
+    runs-on: ubuntu-latest
+    needs: [version-search, get-build-type]
+    if: success() && needs.version-search.outputs.versions
+    steps:
+      - name: Send data to Google Apps Script
+        env:
           g: ${{ secrets.GOOGLE_APPS_URL }}
-        run: ./loaderspot_cli --version "$v" --source "$s" --gas-url "$g" --connections 300
+          versions: ${{ needs.version-search.outputs.versions }}
+          build_type: ${{ needs.get-build-type.outputs.build_type }}
+          source: ${{ github.event.client_payload.s }}
+        run: |
+          if [ -z "$versions" ]; then
+            echo "Versions data is empty. Skipping."
+            exit 0
+          fi
+          
+          if [ "$build_type" = "false" ]; then
+            final_json=$(echo "$versions" | jq \
+              --argjson buildType false \
+              --arg source "$source" \
+              '. + {buildType: $buildType, source: $source}')
+          else
+            final_json=$(echo "$versions" | jq \
+              --arg buildType "$build_type" \
+              --arg source "$source" \
+              '. + {buildType: $buildType, source: $source}')
+          fi
+          
+          response=$(curl -s -L -X POST "$g" -H "Content-Type: application/json" --data-raw "$final_json")
+          
+          if echo "$response" | grep -q "text-align:center"; then
+            clean_response=$(echo "$response" | grep "text-align:center" | sed 's/<[^>]*>//g' | xargs)
+            echo "Ответ от GAS: $clean_response"
+          else
+            echo "Ответ от GAS: $response"
+          fi

@@ -7,7 +7,6 @@ use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::Semaphore;
 use regex::Regex;
-use scraper::{Html, Selector};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 enum PlatformArch {
@@ -149,13 +148,9 @@ struct Cli {
     #[clap(long, default_value_t = 100)]
     connections: usize,
 
-    /// URL to send the found versions to (Google Apps Script)
+    /// Use ladder search algorithm
     #[clap(long)]
-    gas_url: Option<String>,
-
-    /// Source of the version
-    #[clap(long)]
-    source: Option<String>,
+    ladder_search: bool,
 }
 
 fn parse_range(range_str: &str) -> (i32, i32) {
@@ -233,8 +228,7 @@ async fn main() {
 
     let version_clone = cli.version.clone();
     let client_clone = client.clone();
-    let gas_url_clone = cli.gas_url.clone();
-    let source_clone = cli.source.clone();
+    let ladder_search = cli.ladder_search;
     let search_task = tokio::spawn(async move {
         let mut all_found_urls = Vec::new();
 
@@ -249,7 +243,7 @@ async fn main() {
                 arches_to_search.retain(|&p| p != PlatformArch::WinX86);
             }
 
-            if gas_url_clone.is_some() && source_clone.is_some() {
+            if ladder_search {
                 // "Лесенка"
                 let mut start_number = 0;
                 let mut before_enter = 1000;
@@ -264,10 +258,10 @@ async fn main() {
 
                 // Дополнительные поиски
                 for _ in 0..additional_searches {
-                    let latest_urls = get_latest_urls(&all_found_urls, &[version.to_string()], source_clone.as_deref().unwrap_or(""));
+                    let latest_urls = get_latest_urls(&all_found_urls);
                     let target_len = arches_to_search.iter().filter(|&&p| p != PlatformArch::WinX86 || should_use_win_x86(version)).count();
 
-                    if latest_urls.len() >= target_len + 2 { // +2 for version and source
+                    if latest_urls.len() >= target_len {
                         break;
                     }
 
@@ -302,33 +296,16 @@ async fn main() {
 
     pb.finish_and_clear();
 
-    match (&cli.gas_url, &cli.source) {
-        (Some(gas_url), Some(source)) => {
-            let latest_urls = get_latest_urls(&all_found_urls, &cli.version, source);
-            send_to_gas(client, gas_url, latest_urls).await;
-        }
-        (Some(_), None) => {
-            eprintln!("Warning: --gas-url is provided, but --source is missing. Skipping sending to GAS.");
-            let json_output = serde_json::to_string_pretty(&all_found_urls).unwrap();
-            println!("{}", json_output);
-        }
-        (None, Some(_)) => {
-            eprintln!("Warning: --source is provided, but --gas-url is missing. Skipping sending to GAS.");
-            let json_output = serde_json::to_string_pretty(&all_found_urls).unwrap();
-            println!("{}", json_output);
-        }
-        (None, None) => {
-            let json_output = serde_json::to_string_pretty(&all_found_urls).unwrap();
-            println!("{}", json_output);
-        }
+    let mut latest_urls = get_latest_urls(&all_found_urls);
+    if !cli.version.is_empty() {
+        latest_urls.insert("version".to_string(), cli.version.join(", "));
     }
+
+    let json_output = serde_json::to_string_pretty(&latest_urls).unwrap();
+    println!("{}", json_output);
 }
 
-fn get_latest_urls(
-    found_urls: &[(String, PlatformArch)],
-    versions: &[String],
-    source: &str,
-) -> HashMap<String, String> {
+fn get_latest_urls(found_urls: &[(String, PlatformArch)]) -> HashMap<String, String> {
     let mut platform_urls = HashMap::new();
     let version_pattern = Regex::new(r"-(\d+)\.(exe|tbz)$").unwrap();
 
@@ -347,70 +324,16 @@ fn get_latest_urls(
         }
     }
 
-    let mut latest_urls: HashMap<String, String> = platform_urls
+    let latest_urls: HashMap<String, String> = platform_urls
         .into_iter()
         .map(|(k, (v, _))| (k, v))
         .collect();
 
-    if !versions.is_empty() {
-        latest_urls.insert("version".to_string(), versions.join(", "));
-    }
-    
-    latest_urls.insert("source".to_string(), source.to_string());
-
-
     if latest_urls.is_empty() {
         let mut empty_map = HashMap::new();
         empty_map.insert("unknown".to_string(), "unknown".to_string());
-        if !versions.is_empty() {
-            empty_map.insert("version".to_string(), versions.join(", "));
-        }
-        empty_map.insert("source".to_string(), source.to_string());
         return empty_map;
     }
 
     latest_urls
-}
-
-async fn send_to_gas(
-    client: Client,
-    gas_url: &str,
-    data: HashMap<String, String>,
-) {
-    const GAS_ERROR_PREFIX: &str = "Ошибка при отправке в GAS:";
-    let cleaned_gas_url = gas_url.trim_matches('"');
-
-    match client.post(cleaned_gas_url).json(&data).send().await {
-        Ok(response) => {
-            if response.status().is_success() {
-                match response.text().await {
-                    Ok(text) => {
-                        if text.contains("<div") {
-                            let soup = Html::parse_document(&text);
-                            let selector = Selector::parse("div[style*='text-align:center']").unwrap();
-                            if let Some(div) = soup.select(&selector).next() {
-                                println!("Ответ от GAS: {}", div.text().collect::<String>().trim());
-                            } else {
-                                eprintln!("Не удалось извлечь ответ из HTML. Полный ответ:");
-                                eprintln!("{}", text);
-                            }
-                        } else {
-                             println!("Ответ от GAS: {}", text.trim());
-                        }
-                    }
-                    Err(e) => eprintln!("Ошибка чтения ответа от GAS: {}", e),
-                }
-            } else {
-                eprintln!("{} {}", GAS_ERROR_PREFIX, response.status());
-            }
-        }
-        Err(e) => {
-            let error_message = e.to_string();
-            if let Some(index) = error_message.find(" for url (") {
-                eprintln!("{} {}", GAS_ERROR_PREFIX, &error_message[..index]);
-            } else {
-                eprintln!("{} {}", GAS_ERROR_PREFIX, error_message);
-            }
-        }
-    }
 }
