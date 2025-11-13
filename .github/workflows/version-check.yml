@@ -88,11 +88,17 @@ jobs:
               '. + {buildType: $buildType, source: $source}')
           fi
           
-          response=$(curl -s -L -X POST "$g" -H "Content-Type: application/json" --data-raw "$final_json")
+          echo "Отправка данных на GAS..."
           
-          if echo "$response" | grep -q "text-align:center"; then
-            clean_response=$(echo "$response" | grep "text-align:center" | sed 's/<[^>]*>//g' | xargs)
-            echo "Ответ от GAS: $clean_response"
+          response=$(curl -s -L -X POST "$g" \
+            -H "Content-Type: application/json" \
+            --data-raw "$final_json")
+          
+          if echo "$response" | grep -q "<!DOCTYPE html>"; then
+            echo "Ошибка: получен HTML вместо текстового ответа"
+            echo "Полученный HTML:"
+            echo "$response"
+            exit 1
           else
             echo "Ответ от GAS: $response"
           fi
