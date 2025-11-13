@@ -90,17 +90,7 @@ jobs:
           
           echo "Отправка данных на GAS..."
           
-          # Показываем все редиректы
-          echo "Отладка редиректов:"
-          curl -v -L -X POST "$g" \
-            -H "Content-Type: application/json" \
-            --data-raw "$final_json" 2>&1 | grep -E "(< HTTP|< Location:)" || true
-          
-          echo ""
-          echo "Финальный ответ:"
-          
-          # Делаем реальный запрос
-          response=$(curl -s --location-trusted -X POST "$g" \
+          response=$(curl -s -L --post301 --post302 --post303 -X POST "$g" \
             -H "Content-Type: application/json" \
             --data-raw "$final_json")
           
