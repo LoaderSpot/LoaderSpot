@@ -1,3 +1,7 @@
+param (
+    [string]$Url
+)
+
 function Find-BuildInfo {
     [CmdletBinding()]
     param (
@@ -37,11 +41,7 @@ function Find-BuildInfo {
 
 function Download-And-Unpack-Spotify {
     [CmdletBinding()]
-    param (
-        [Parameter(Mandatory=$true)]
-        [string]$Url
-    )
-
+    
     $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) "spotify"
     $destinationPath = Join-Path $tempPath "unpacked"
     $exePath = Join-Path $tempPath "SpotifySetup.exe"
@@ -81,12 +81,9 @@ function Download-And-Unpack-Spotify {
     }
 }
 
-param (
-    [string]$Url
-)
 
 if (-not [string]::IsNullOrEmpty($Url)) {
-    Download-And-Unpack-Spotify -Url $Url
+    Download-And-Unpack-Spotify
 } else {
     Write-Error "URL не был предоставлен."
     echo "::set-output name=build_type::false"
