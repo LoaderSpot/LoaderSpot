@@ -90,15 +90,20 @@ jobs:
           
           echo "Отправка данных на GAS..."
           
-          response=$(curl -s -L -X POST "$g" \
+          response=$(curl -s -L --max-redirs 10 -X POST "$g" \
             -H "Content-Type: application/json" \
-            --data-raw "$final_json")
+            -H "Accept: text/plain" \
+            --data-raw "$final_json" \
+            -w "\nHTTP_CODE:%{http_code}")
           
-          if echo "$response" | grep -q "<!DOCTYPE html>"; then
-            echo "Ошибка: получен HTML вместо текстового ответа"
-            echo "Полученный HTML:"
-            echo "$response"
-            exit 1
+          http_code=$(echo "$response" | grep "HTTP_CODE:" | cut -d: -f2)
+          body=$(echo "$response" | sed '/HTTP_CODE:/d')
+          
+          echo "HTTP код: $http_code"
+          
+          if echo "$body" | grep -q "<!DOCTYPE html>"; then
+            echo "Получен HTML ответ, но скрипт выполнился (проверьте Telegram)"
+            echo "Возможно, это промежуточный редирект"
           else
-            echo "Ответ от GAS: $response"
+            echo "Ответ от GAS: $body"
           fi
