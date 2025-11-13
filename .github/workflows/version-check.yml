@@ -30,8 +30,11 @@ jobs:
           v: ${{ github.event.client_payload.v }}
           s: ${{ github.event.client_payload.s }}
         run: |
-          json_output=$(./loaderspot_cli --version "$v" --connections 300 --ladder-search)
-          echo "versions=$json_output" >> $GITHUB_OUTPUT
+          {
+            echo 'versions<<EOF'
+            ./loaderspot_cli --version "$v" --connections 300 --ladder-search
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
   get-build-type:
     runs-on: windows-latest

@@ -18,9 +18,7 @@ function Find-BuildInfo {
                     $buildType = $match.Groups[1].Value
                     Write-Output "Тип билда: $buildType"
                     $found = $true
-                    # Выводим тип билда в специальном формате для GitHub Actions
                     echo "::set-output name=build_type::$buildType"
-                    # Прерываем цикл после первого найденного совпадения
                     break
                 }
             }
