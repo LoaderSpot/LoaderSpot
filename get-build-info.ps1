@@ -63,7 +63,7 @@ function Download-And-Unpack-Spotify {
 
         Write-Output "Распаковка файла в $destinationPath..."
         Start-Process -Wait -FilePath $exePath -ArgumentList "/extract `"$destinationPath`""
-        Write-Output "Распаковка завершена."
+        Write-Output "Распаковка завершена"
 
         $dllPath = Join-Path $destinationPath "Spotify.dll"
         $exePathForAnalysis = Join-Path $destinationPath "Spotify.exe"

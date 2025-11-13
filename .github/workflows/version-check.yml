@@ -62,9 +62,6 @@ jobs:
             $buildType = "false"
           }
           
-          Write-Host "🔧 Build Type: $buildType"
-          
-          # Формируем финальный JSON
           $versionsObj = $env:versions | ConvertFrom-Json
           
           if ($buildType -eq "false") {
