@@ -90,20 +90,23 @@ jobs:
           
           echo "Отправка данных на GAS..."
           
-          response=$(curl -s -L --max-redirs 10 -X POST "$g" \
+          # Показываем все редиректы
+          echo "Отладка редиректов:"
+          curl -v -L -X POST "$g" \
             -H "Content-Type: application/json" \
-            -H "Accept: text/plain" \
-            --data-raw "$final_json" \
-            -w "\nHTTP_CODE:%{http_code}")
+            --data-raw "$final_json" 2>&1 | grep -E "(< HTTP|< Location:)" || true
           
-          http_code=$(echo "$response" | grep "HTTP_CODE:" | cut -d: -f2)
-          body=$(echo "$response" | sed '/HTTP_CODE:/d')
+          echo ""
+          echo "Финальный ответ:"
           
-          echo "HTTP код: $http_code"
+          # Делаем реальный запрос
+          response=$(curl -s --location-trusted -X POST "$g" \
+            -H "Content-Type: application/json" \
+            --data-raw "$final_json")
           
-          if echo "$body" | grep -q "<!DOCTYPE html>"; then
-            echo "Получен HTML ответ, но скрипт выполнился (проверьте Telegram)"
-            echo "Возможно, это промежуточный редирект"
+          if echo "$response" | grep -q "<!DOCTYPE html>"; then
+            echo "Получен HTML ответ"
+            echo "Проверьте сообщение в Telegram - если оно пришло, значит скрипт работает"
           else
-            echo "Ответ от GAS: $body"
+            echo "Ответ от GAS: $response"
           fi
