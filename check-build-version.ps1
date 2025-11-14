@@ -97,40 +97,29 @@ if ($win64Url) {
 }
 
 if ($buildType -eq $false) {
-    $versionsObj | Add-Member -NotePropertyName "buildType" -NotePropertyValue $false -Force
-} else {
-    $versionsObj | Add-Member -NotePropertyName "buildType" -NotePropertyValue $buildType -Force
+    Write-Host "Тип сборки не определен, отправка в GAS отменена."
+    exit 0
 }
 
+$versionsObj | Add-Member -NotePropertyName "buildType" -NotePropertyValue $buildType -Force
 $versionsObj | Add-Member -NotePropertyName "source" -NotePropertyValue $source -Force
 
 $finalJson = $versionsObj | ConvertTo-Json -Compress
 
 Write-Host "Отправка данных на GAS..."
 
-$maxRetries = 3
-$retryDelay = 5
-$attempt = 0
-$success = $false
-
-while ($attempt -lt $maxRetries -and -not $success) {
-    $attempt++
-    try {
-        $response = Invoke-WebRequest -Uri $googleAppsUrl `
-          -Method POST `
-          -ContentType "application/json" `
-          -Body $finalJson `
-          -UseBasicParsing -ErrorAction Stop
-        
+try {
+    $response = Invoke-WebRequest -Uri $googleAppsUrl `
+        -Method POST `
+        -ContentType "application/json" `
+        -Body $finalJson `
+        -UseBasicParsing -ErrorAction Stop
+    
+    if ($response.StatusCode -eq 200) {
         Write-Host "Ответ от GAS: $($response.Content)"
-        $success = $true
-    } catch {
-        Write-Error "Ошибка при отправке в GAS: $_"
-        if ($attempt -lt $maxRetries) {
-            Start-Sleep -Seconds $retryDelay
-        } else {
-            Write-Error "Не удалось отправить данные в GAS после $maxRetries попыток."
-            exit 1
-        }
+    } else {
+        Write-Error "Ошибка при отправке в GAS. Статус: $($response.StatusCode). Ответ: $($response.Content)"
     }
+} catch {
+    Write-Error "Критическая ошибка при отправке в GAS: $_"
 }
