@@ -61,9 +61,8 @@ function Get-BuildTypeFromUrl {
         Invoke-WebRequest -Uri $Url -OutFile $exePath
         Write-Host "Файл сохранен в $exePath"
 
-        Write-Host "Распаковка файла в $destinationPath..."
+        Write-Host "Распаковка файла в $destinationPath"
         Start-Process -Wait -FilePath $exePath -ArgumentList "/extract `"$destinationPath`""
-        Write-Host "Распаковка завершена"
 
         $dllPath = Join-Path $destinationPath "Spotify.dll"
         $exePathForAnalysis = Join-Path $destinationPath "Spotify.exe"
@@ -108,7 +107,6 @@ $versionsObj | Add-Member -NotePropertyName "source" -NotePropertyValue $source 
 $finalJson = $versionsObj | ConvertTo-Json -Compress
 
 Write-Host "Отправка данных на GAS..."
-Write-Host "JSON: $finalJson"
 
 $maxRetries = 3
 $retryDelay = 5
@@ -118,7 +116,6 @@ $success = $false
 while ($attempt -lt $maxRetries -and -not $success) {
     $attempt++
     try {
-        Write-Host "Попытка отправки #$attempt..."
         $response = Invoke-WebRequest -Uri $googleAppsUrl `
           -Method POST `
           -ContentType "application/json" `
@@ -130,7 +127,6 @@ while ($attempt -lt $maxRetries -and -not $success) {
     } catch {
         Write-Error "Ошибка при отправке в GAS: $_"
         if ($attempt -lt $maxRetries) {
-            Write-Host "Ожидание $retryDelay секунд перед следующей попыткой..."
             Start-Sleep -Seconds $retryDelay
         } else {
             Write-Error "Не удалось отправить данные в GAS после $maxRetries попыток."
