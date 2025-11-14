@@ -44,49 +44,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Get build type and send to GAS
+      - name: Get build info and send to GAS
         shell: pwsh
         env:
           GOOGLE_APPS_URL: ${{ secrets.GOOGLE_APPS_URL }}
-          versions: ${{ needs.version-search.outputs.versions }}
-          source: ${{ github.event.client_payload.s }}
+          VERSIONS: ${{ needs.version-search.outputs.versions }}
+          SOURCE: ${{ github.event.client_payload.s }}
         run: |
-          # Получаем build type
-          $versionsJson = $env:versions | ConvertFrom-Json
-          $win64Url = $versionsJson.WIN64
-          
-          if ($win64Url) {
-            ./get-build-info.ps1 -Url $win64Url
-            $buildType = (Get-Content $env:GITHUB_OUTPUT | Select-String "build_type=(.+)" | ForEach-Object { $_.Matches.Groups[1].Value })
-          } else {
-            $buildType = "false"
-          }
-          
-          $versionsObj = $env:versions | ConvertFrom-Json
-          
-          if ($buildType -eq "false") {
-            $versionsObj | Add-Member -NotePropertyName "buildType" -NotePropertyValue $false -Force
-          } else {
-            $versionsObj | Add-Member -NotePropertyName "buildType" -NotePropertyValue $buildType -Force
-          }
-          
-          $versionsObj | Add-Member -NotePropertyName "source" -NotePropertyValue $env:source -Force
-          
-          $finalJson = $versionsObj | ConvertTo-Json -Compress
-          
-          Write-Host "Отправка данных на GAS..."
-          Write-Host "Версия: $($versionsObj.version)"
-          
-          # Отправляем в GAS через PowerShell
-          try {
-            $response = Invoke-WebRequest -Uri $env:GOOGLE_APPS_URL `
-              -Method POST `
-              -ContentType "application/json" `
-              -Body $finalJson `
-              -UseBasicParsing
-            
-            Write-Host "Ответ от GAS: $($response.Content)"
-          } catch {
-            Write-Host "Ошибка при отправке в GAS: $_"
-            exit 1
-          }
+          ./check-build-version.ps1 -versions "$env:VERSIONS" -source "$env:SOURCE" -googleAppsUrl "$env:GOOGLE_APPS_URL"
