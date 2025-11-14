@@ -97,11 +97,11 @@ if ($win64Url) {
 }
 
 if ($buildType -eq $false) {
-    Write-Host "Тип сборки не определен, отправка в GAS отменена."
-    exit 0
+    $versionsObj | Add-Member -NotePropertyName "buildType" -NotePropertyValue $false -Force
+} else {
+    $versionsObj | Add-Member -NotePropertyName "buildType" -NotePropertyValue $buildType -Force
 }
 
-$versionsObj | Add-Member -NotePropertyName "buildType" -NotePropertyValue $buildType -Force
 $versionsObj | Add-Member -NotePropertyName "source" -NotePropertyValue $source -Force
 
 $finalJson = $versionsObj | ConvertTo-Json -Compress
