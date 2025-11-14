@@ -22,13 +22,13 @@ function Find-BuildInfo {
                 $match = [regex]::Match($line, $regex)
                 if ($match.Success) {
                     $buildType = $match.Groups[1].Value
-                    Write-Output "build type: $buildType"
+                    Write-Host "build type: $buildType"
                     return $buildType
                 }
             }
 
             if (-not $found) {
-                Write-Output "Билд не найден"
+                Write-Host "Билд не найден"
                 return $false
             }
         }
@@ -57,13 +57,13 @@ function Get-BuildTypeFromUrl {
     }
 
     try {
-        Write-Output "Скачивание файла из $Url..."
+        Write-Host "Скачивание файла из $Url..."
         Invoke-WebRequest -Uri $Url -OutFile $exePath
-        Write-Output "Файл сохранен в $exePath"
+        Write-Host "Файл сохранен в $exePath"
 
-        Write-Output "Распаковка файла в $destinationPath..."
+        Write-Host "Распаковка файла в $destinationPath..."
         Start-Process -Wait -FilePath $exePath -ArgumentList "/extract `"$destinationPath`""
-        Write-Output "Распаковка завершена"
+        Write-Host "Распаковка завершена"
 
         $dllPath = Join-Path $destinationPath "Spotify.dll"
         $exePathForAnalysis = Join-Path $destinationPath "Spotify.exe"
