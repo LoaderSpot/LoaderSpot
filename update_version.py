@@ -4,15 +4,19 @@ import re
 import sys
 
 
-def update_version(data_json: str, version_file: str = "versions.json") -> bool:
+def update_version(data_json: str, build_type: str = None, version_file: str = "versions.json") -> bool:
     try:
         data = json.loads(data_json)
-        
+        version_key = list(data.keys())[0]
+        version_data = data[version_key]
+
+        if build_type and build_type.lower() != 'false':
+            version_data = {'buildType': build_type, **version_data}
+
         with open(version_file, 'r', encoding='utf-8') as f:
             file_data = json.load(f)
         
-        version_key = list(data.keys())[0]
-        file_data[version_key] = data[version_key]
+        file_data[version_key] = version_data
         
         sorted_data = dict(
             sorted(
@@ -44,13 +48,14 @@ def update_version(data_json: str, version_file: str = "versions.json") -> bool:
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python update_version.py '<json_data>' [version_file]", file=sys.stderr)
+        print("Usage: python update_version.py '<json_data>' [build_type] [version_file]", file=sys.stderr)
         sys.exit(1)
     
     data_json = sys.argv[1]
-    version_file = sys.argv[2] if len(sys.argv) > 2 else "versions.json"
+    build_type = sys.argv[2] if len(sys.argv) > 2 else None
+    version_file = sys.argv[3] if len(sys.argv) > 3 else "versions.json"
     
-    success = update_version(data_json, version_file)
+    success = update_version(data_json, build_type, version_file)
     sys.exit(0 if success else 1)
 
 
