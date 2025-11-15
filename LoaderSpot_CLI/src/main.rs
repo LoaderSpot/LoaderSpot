@@ -226,17 +226,20 @@ async fn main() {
     pb.set_style(spinner_style);
     pb.enable_steady_tick(Duration::from_millis(80));
 
-    let version_clone = cli.version.clone();
+    let versions = cli.version.clone();
     let client_clone = client.clone();
     let ladder_search = cli.ladder_search;
-    let search_task = tokio::spawn(async move {
-        let mut all_found_urls = Vec::new();
+    let versions_clone_for_task = versions.clone();
 
-        for version in &version_clone {
+    let search_task = tokio::spawn(async move {
+        let mut results = Vec::new();
+
+        for version in &versions_clone_for_task {
+            let mut all_found_urls_for_version = Vec::new();
             let mut arches_to_search = platform_arches.clone();
 
             if !should_use_win_x86(version) && arches_to_search.contains(&PlatformArch::WinX86) {
-                if version_clone.len() == 1 && arches_to_search.len() == 1 {
+                if versions_clone_for_task.len() == 1 && arches_to_search.len() == 1 {
                     eprintln!("Warning: x86 architecture for Windows is no longer supported for versions newer than 1.2.53.");
                     continue;
                 }
@@ -244,21 +247,18 @@ async fn main() {
             }
 
             if ladder_search {
-                // "Лесенка"
                 let mut start_number = 0;
                 let mut before_enter = 1000;
                 let additional_searches = 15;
                 let increment = 1000;
 
-                // Первый проход
                 for &platform_arch in &arches_to_search {
                     let found = search_installers(&client_clone, version, start_number, before_enter, platform_arch, connections).await;
-                    all_found_urls.extend(found);
+                    all_found_urls_for_version.extend(found);
                 }
 
-                // Дополнительные поиски
                 for _ in 0..additional_searches {
-                    let latest_urls = get_latest_urls(&all_found_urls);
+                    let latest_urls = get_latest_urls(&all_found_urls_for_version);
                     let target_len = arches_to_search.iter().filter(|&&p| p != PlatformArch::WinX86 || should_use_win_x86(version)).count();
 
                     if latest_urls.len() >= target_len {
@@ -274,35 +274,37 @@ async fn main() {
                             missing_arches.push(platform_arch);
                         }
                     }
-                    
+
                     for &platform_arch in &missing_arches {
                         let found = search_installers(&client_clone, version, start_number, before_enter, platform_arch, connections).await;
-                        all_found_urls.extend(found);
+                        all_found_urls_for_version.extend(found);
                     }
                 }
             } else {
-                // Стандартный поиск
                 let (start, end) = parse_range(&range);
                 for &platform_arch in &arches_to_search {
                     let found = search_installers(&client_clone, version, start, end, platform_arch, connections).await;
-                    all_found_urls.extend(found);
+                    all_found_urls_for_version.extend(found);
                 }
             }
+
+            let mut latest_urls = get_latest_urls(&all_found_urls_for_version);
+            latest_urls.insert("version".to_string(), version.clone());
+            results.push(latest_urls);
         }
-        all_found_urls
+        results
     });
 
-    let all_found_urls = search_task.await.unwrap();
-
+    let results = search_task.await.unwrap();
     pb.finish_and_clear();
 
-    let mut latest_urls = get_latest_urls(&all_found_urls);
-    if !cli.version.is_empty() {
-        latest_urls.insert("version".to_string(), cli.version.join(", "));
+    if versions.len() == 1 {
+        let json_output = serde_json::to_string_pretty(&results[0]).unwrap();
+        println!("{}", json_output);
+    } else {
+        let json_output = serde_json::to_string_pretty(&results).unwrap();
+        println!("{}", json_output);
     }
-
-    let json_output = serde_json::to_string_pretty(&latest_urls).unwrap();
-    println!("{}", json_output);
 }
 
 fn get_latest_urls(found_urls: &[(String, PlatformArch)]) -> HashMap<String, String> {
