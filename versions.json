@@ -30,6 +30,7 @@
     }
   },
   "1.2.77.288": {
+    "buildType": "Master",
     "fullversion": "1.2.77.288.g30addd9f",
     "links": {
       "win": {
@@ -44,6 +45,7 @@
     }
   },
   "1.2.77.250": {
+    "buildType": "Master",
     "fullversion": "1.2.77.250.g2d195c71",
     "links": {
       "win": {
@@ -58,6 +60,7 @@
     }
   },
   "1.2.77.162": {
+    "buildType": "Master",
     "fullversion": "1.2.77.162.ga10209d6",
     "links": {
       "win": {
@@ -72,6 +75,7 @@
     }
   },
   "1.2.77.159": {
+    "buildType": "Master",
     "fullversion": "1.2.77.159.gd5928880",
     "links": {
       "win": {
@@ -86,6 +90,7 @@
     }
   },
   "1.2.77.158": {
+    "buildType": "Master",
     "fullversion": "1.2.77.158.g41a657be",
     "links": {
       "win": {
@@ -100,6 +105,7 @@
     }
   },
   "1.2.77.144": {
+    "buildType": "Master",
     "fullversion": "1.2.77.144.gb6198f81",
     "links": {
       "win": {
@@ -114,6 +120,7 @@
     }
   },
   "1.2.76.298": {
+    "buildType": "Release",
     "fullversion": "1.2.76.298.g2316a870",
     "links": {
       "win": {
@@ -128,6 +135,7 @@
     }
   },
   "1.2.76.297": {
+    "buildType": "Release",
     "fullversion": "1.2.76.297.ga70a30a3",
     "links": {
       "win": {
@@ -142,6 +150,7 @@
     }
   },
   "1.2.76.286": {
+    "buildType": "Release",
     "fullversion": "1.2.76.286.g733f9d86",
     "links": {
       "win": {
@@ -156,6 +165,7 @@
     }
   },
   "1.2.76.274": {
+    "buildType": "Master",
     "fullversion": "1.2.76.274.g749ee04a",
     "links": {
       "win": {
@@ -170,6 +180,7 @@
     }
   },
   "1.2.76.268": {
+    "buildType": "Master",
     "fullversion": "1.2.76.268.g83d1f263",
     "links": {
       "win": {
@@ -184,6 +195,7 @@
     }
   },
   "1.2.76.256": {
+    "buildType": "Master",
     "fullversion": "1.2.76.256.g12350e86",
     "links": {
       "win": {
@@ -198,6 +210,7 @@
     }
   },
   "1.2.75.510": {
+    "buildType": "Release",
     "fullversion": "1.2.75.510.g8f748905",
     "links": {
       "win": {
@@ -212,6 +225,7 @@
     }
   },
   "1.2.75.508": {
+    "buildType": "Release",
     "fullversion": "1.2.75.508.g2079da61",
     "links": {
       "win": {
@@ -226,6 +240,7 @@
     }
   },
   "1.2.75.507": {
+    "buildType": "Release",
     "fullversion": "1.2.75.507.gee6e6c93",
     "links": {
       "win": {
@@ -240,6 +255,7 @@
     }
   },
   "1.2.75.506": {
+    "buildType": "Release",
     "fullversion": "1.2.75.506.g38295b74",
     "links": {
       "win": {
@@ -254,6 +270,7 @@
     }
   },
   "1.2.75.499": {
+    "buildType": "Release",
     "fullversion": "1.2.75.499.g0c61121f",
     "links": {
       "win": {
@@ -268,6 +285,7 @@
     }
   },
   "1.2.75.391": {
+    "buildType": "Release",
     "fullversion": "1.2.75.391.g6c85102e",
     "links": {
       "win": {
@@ -282,6 +300,7 @@
     }
   },
   "1.2.75.280": {
+    "buildType": "Release",
     "fullversion": "1.2.75.280.gb8d7ae93",
     "links": {
       "win": {
@@ -296,6 +315,7 @@
     }
   },
   "1.2.74.477": {
+    "buildType": "Release",
     "fullversion": "1.2.74.477.g3be53afe",
     "links": {
       "win": {
@@ -310,6 +330,7 @@
     }
   },
   "1.2.74.471": {
+    "buildType": "Release",
     "fullversion": "1.2.74.471.g95134d25",
     "links": {
       "win": {
@@ -324,6 +345,7 @@
     }
   },
   "1.2.74.462": {
+    "buildType": "Release",
     "fullversion": "1.2.74.462.g16b80659",
     "links": {
       "win": {
@@ -338,6 +360,7 @@
     }
   },
   "1.2.73.474": {
+    "buildType": "Release",
     "fullversion": "1.2.73.474.g7b30bb2b",
     "links": {
       "win": {
@@ -352,6 +375,7 @@
     }
   },
   "1.2.73.468": {
+    "buildType": "Release",
     "fullversion": "1.2.73.468.ga3576127",
     "links": {
       "win": {
@@ -366,6 +390,7 @@
     }
   },
   "1.2.73.466": {
+    "buildType": "Release",
     "fullversion": "1.2.73.466.gd9dcf250",
     "links": {
       "win": {
@@ -380,6 +405,7 @@
     }
   },
   "1.2.73.465": {
+    "buildType": "Release",
     "fullversion": "1.2.73.465.g421365a8",
     "links": {
       "win": {
@@ -394,6 +420,7 @@
     }
   },
   "1.2.73.451": {
+    "buildType": "Release",
     "fullversion": "1.2.73.451.g3cd20529",
     "links": {
       "win": {
@@ -408,6 +435,7 @@
     }
   },
   "1.2.72.438": {
+    "buildType": "Release",
     "fullversion": "1.2.72.438.g8c88c31c",
     "links": {
       "win": {
@@ -422,6 +450,7 @@
     }
   },
   "1.2.72.437": {
+    "buildType": "Release",
     "fullversion": "1.2.72.437.gaf82ef12",
     "links": {
       "win": {
@@ -436,6 +465,7 @@
     }
   },
   "1.2.72.435": {
+    "buildType": "Release",
     "fullversion": "1.2.72.435.ge33795c7",
     "links": {
       "win": {
@@ -450,6 +480,7 @@
     }
   },
   "1.2.71.421": {
+    "buildType": "Release",
     "fullversion": "1.2.71.421.g794ff5e5",
     "links": {
       "win": {
@@ -464,6 +495,7 @@
     }
   },
   "1.2.71.363": {
+    "buildType": "Release",
     "fullversion": "1.2.71.363.g02160d4a",
     "links": {
       "win": {
@@ -478,6 +510,7 @@
     }
   },
   "1.2.70.409": {
+    "buildType": "Release",
     "fullversion": "1.2.70.409.gd4fa4141",
     "links": {
       "win": {
@@ -492,6 +525,7 @@
     }
   },
   "1.2.70.407": {
+    "buildType": "Release",
     "fullversion": "1.2.70.407.g122a4669",
     "links": {
       "win": {
@@ -506,6 +540,7 @@
     }
   },
   "1.2.70.406": {
+    "buildType": "Release",
     "fullversion": "1.2.70.406.g090b09ce",
     "links": {
       "win": {
@@ -520,6 +555,7 @@
     }
   },
   "1.2.70.404": {
+    "buildType": "Release",
     "fullversion": "1.2.70.404.g35f790a1",
     "links": {
       "win": {
@@ -534,6 +570,7 @@
     }
   },
   "1.2.70.254": {
+    "buildType": "Release",
     "fullversion": "1.2.70.254.gc8d9cbb8",
     "links": {
       "win": {
@@ -548,6 +585,7 @@
     }
   },
   "1.2.70.253": {
+    "buildType": "Release",
     "fullversion": "1.2.70.253.g75b5048f",
     "links": {
       "win": {
@@ -562,6 +600,7 @@
     }
   },
   "1.2.69.449": {
+    "buildType": "Release",
     "fullversion": "1.2.69.449.gfda8591a",
     "links": {
       "win": {
@@ -576,6 +615,7 @@
     }
   },
   "1.2.69.448": {
+    "buildType": "Release",
     "fullversion": "1.2.69.448.ge76b8882",
     "links": {
       "win": {
@@ -590,6 +630,7 @@
     }
   },
   "1.2.68.528": {
+    "buildType": "Release",
     "fullversion": "1.2.68.528.g50f97d42",
     "links": {
       "win": {
@@ -604,6 +645,7 @@
     }
   },
   "1.2.68.525": {
+    "buildType": "Release",
     "fullversion": "1.2.68.525.g48fbf8fd",
     "links": {
       "win": {
@@ -618,6 +660,7 @@
     }
   },
   "1.2.67.560": {
+    "buildType": "Release",
     "fullversion": "1.2.67.560.g46a15f6b",
     "links": {
       "win": {
@@ -632,6 +675,7 @@
     }
   },
   "1.2.67.557": {
+    "buildType": "Release",
     "fullversion": "1.2.67.557.g2d9c92d2",
     "links": {
       "win": {
@@ -646,6 +690,7 @@
     }
   },
   "1.2.67.556": {
+    "buildType": "Release",
     "fullversion": "1.2.67.556.g7023c791",
     "links": {
       "win": {
@@ -660,6 +705,7 @@
     }
   },
   "1.2.67.555": {
+    "buildType": "Release",
     "fullversion": "1.2.67.555.gaf416c8c",
     "links": {
       "win": {
@@ -674,6 +720,7 @@
     }
   },
   "1.2.67.553": {
+    "buildType": "Release",
     "fullversion": "1.2.67.553.gf85dc202",
     "links": {
       "win": {
@@ -688,6 +735,7 @@
     }
   },
   "1.2.66.447": {
+    "buildType": "Release",
     "fullversion": "1.2.66.447.g4e37e896",
     "links": {
       "win": {
@@ -702,6 +750,7 @@
     }
   },
   "1.2.66.445": {
+    "buildType": "Release",
     "fullversion": "1.2.66.445.ge795b717",
     "links": {
       "win": {
@@ -716,6 +765,7 @@
     }
   },
   "1.2.66.444": {
+    "buildType": "Release",
     "fullversion": "1.2.66.444.gf7d4ad52",
     "links": {
       "win": {
@@ -730,6 +780,7 @@
     }
   },
   "1.2.65.255": {
+    "buildType": "Release",
     "fullversion": "1.2.65.255.g85e641b4",
     "links": {
       "win": {
@@ -759,6 +810,7 @@
     }
   },
   "1.2.64.408": {
+    "buildType": "Release",
     "fullversion": "1.2.64.408.g0a9b557c",
     "links": {
       "win": {
@@ -773,6 +825,7 @@
     }
   },
   "1.2.64.407": {
+    "buildType": "Release",
     "fullversion": "1.2.64.407.g14ea11a6",
     "links": {
       "win": {
@@ -787,6 +840,7 @@
     }
   },
   "1.2.63.394": {
+    "buildType": "Release",
     "fullversion": "1.2.63.394.g126b0d89",
     "links": {
       "win": {
@@ -801,6 +855,7 @@
     }
   },
   "1.2.63.392": {
+    "buildType": "Release",
     "fullversion": "1.2.63.392.g7bc0a62b",
     "links": {
       "win": {
@@ -815,6 +870,7 @@
     }
   },
   "1.2.63.390": {
+    "buildType": "Release",
     "fullversion": "1.2.63.390.g633c71cd",
     "links": {
       "win": {
@@ -829,6 +885,7 @@
     }
   },
   "1.2.63.380": {
+    "buildType": "Release",
     "fullversion": "1.2.63.380.g54ef49eb",
     "links": {
       "win": {
@@ -843,6 +900,7 @@
     }
   },
   "1.2.62.580": {
+    "buildType": "Release",
     "fullversion": "1.2.62.580.gb27ad23e",
     "links": {
       "win": {
@@ -857,6 +915,7 @@
     }
   },
   "1.2.62.578": {
+    "buildType": "Release",
     "fullversion": "1.2.62.578.g7b42a3bb",
     "links": {
       "win": {
@@ -871,6 +930,7 @@
     }
   },
   "1.2.62.575": {
+    "buildType": "Release",
     "fullversion": "1.2.62.575.ge8b4160e",
     "links": {
       "win": {
@@ -885,6 +945,7 @@
     }
   },
   "1.2.61.443": {
+    "buildType": "Release",
     "fullversion": "1.2.61.443.gc51c574b",
     "links": {
       "win": {
@@ -899,6 +960,7 @@
     }
   },
   "1.2.61.431": {
+    "buildType": "Release",
     "fullversion": "1.2.61.431.g05f88175",
     "links": {
       "win": {
@@ -913,6 +975,7 @@
     }
   },
   "1.2.61.430": {
+    "buildType": "Release",
     "fullversion": "1.2.61.430.gbef83518",
     "links": {
       "win": {
@@ -927,6 +990,7 @@
     }
   },
   "1.2.61.427": {
+    "buildType": "Release",
     "fullversion": "1.2.61.427.g5b75eb06",
     "links": {
       "win": {
@@ -941,6 +1005,7 @@
     }
   },
   "1.2.60.564": {
+    "buildType": "Release",
     "fullversion": "1.2.60.564.gcc6305cb",
     "links": {
       "win": {
@@ -955,6 +1020,7 @@
     }
   },
   "1.2.59.518": {
+    "buildType": "Release",
     "fullversion": "1.2.59.518.g42b3652d",
     "links": {
       "win": {
@@ -969,6 +1035,7 @@
     }
   },
   "1.2.59.517": {
+    "buildType": "Release",
     "fullversion": "1.2.59.517.g16b54919",
     "links": {
       "win": {
@@ -983,6 +1050,7 @@
     }
   },
   "1.2.59.515": {
+    "buildType": "Release",
     "fullversion": "1.2.59.515.g1e7f93a9",
     "links": {
       "win": {
@@ -997,6 +1065,7 @@
     }
   },
   "1.2.59.514": {
+    "buildType": "Release",
     "fullversion": "1.2.59.514.g834e17d4",
     "links": {
       "win": {
@@ -1011,6 +1080,7 @@
     }
   },
   "1.2.59.513": {
+    "buildType": "Release",
     "fullversion": "1.2.59.513.g9e00425b",
     "links": {
       "win": {
@@ -1025,6 +1095,7 @@
     }
   },
   "1.2.59.510": {
+    "buildType": "Release",
     "fullversion": "1.2.59.510.gb8e30f45",
     "links": {
       "win": {
@@ -1039,6 +1110,7 @@
     }
   },
   "1.2.59.508": {
+    "buildType": "Release",
     "fullversion": "1.2.59.508.gba71e9f7",
     "links": {
       "win": {
@@ -1053,6 +1125,7 @@
     }
   },
   "1.2.58.498": {
+    "buildType": "Release",
     "fullversion": "1.2.58.498.g6afe77b7",
     "links": {
       "win": {
@@ -1067,6 +1140,7 @@
     }
   },
   "1.2.58.496": {
+    "buildType": "Release",
     "fullversion": "1.2.58.496.g82a757a5",
     "links": {
       "win": {
@@ -1081,6 +1155,7 @@
     }
   },
   "1.2.58.492": {
+    "buildType": "Release",
     "fullversion": "1.2.58.492.g5e7cd836",
     "links": {
       "win": {
@@ -1095,6 +1170,7 @@
     }
   },
   "1.2.57.463": {
+    "buildType": "Release",
     "fullversion": "1.2.57.463.g4f748c64",
     "links": {
       "win": {
@@ -1109,6 +1185,7 @@
     }
   },
   "1.2.57.460": {
+    "buildType": "Release",
     "fullversion": "1.2.57.460.gf31c26a7",
     "links": {
       "win": {
@@ -1123,6 +1200,7 @@
     }
   },
   "1.2.56.502": {
+    "buildType": "Release",
     "fullversion": "1.2.56.502.ga68d2d4f",
     "links": {
       "win": {
@@ -1137,6 +1215,7 @@
     }
   },
   "1.2.56.497": {
+    "buildType": "Release",
     "fullversion": "1.2.56.497.g3da60fab",
     "links": {
       "win": {
@@ -1151,6 +1230,7 @@
     }
   },
   "1.2.55.235": {
+    "buildType": "Release",
     "fullversion": "1.2.55.235.g5eaa0904",
     "links": {
       "win": {
@@ -1165,6 +1245,7 @@
     }
   },
   "1.2.54.304": {
+    "buildType": "Release",
     "fullversion": "1.2.54.304.gcc3c7f45",
     "links": {
       "win": {
@@ -1179,6 +1260,7 @@
     }
   },
   "1.2.53.440": {
+    "buildType": "Release",
     "fullversion": "1.2.53.440.g7b2f582a",
     "links": {
       "win": {
@@ -1193,6 +1275,7 @@
     }
   },
   "1.2.53.438": {
+    "buildType": "Release",
     "fullversion": "1.2.53.438.g246d60c9",
     "links": {
       "win": {
@@ -1207,6 +1290,7 @@
     }
   },
   "1.2.53.437": {
+    "buildType": "Release",
     "fullversion": "1.2.53.437.gd3a938d4",
     "links": {
       "win": {
@@ -1221,6 +1305,7 @@
     }
   },
   "1.2.52.442": {
+    "buildType": "Release",
     "fullversion": "1.2.52.442.g01893f92",
     "links": {
       "win": {
@@ -1235,6 +1320,7 @@
     }
   },
   "1.2.51.345": {
+    "buildType": "Release",
     "fullversion": "1.2.51.345.gcc39d911",
     "links": {
       "win": {
@@ -1249,6 +1335,7 @@
     }
   },
   "1.2.50.335": {
+    "buildType": "Release",
     "fullversion": "1.2.50.335.g5e2860a8",
     "links": {
       "win": {
@@ -1263,6 +1350,7 @@
     }
   },
   "1.2.50.334": {
+    "buildType": "Release",
     "fullversion": "1.2.50.334.g0bd5c2a4",
     "links": {
       "win": {
@@ -1277,6 +1365,7 @@
     }
   },
   "1.2.50.333": {
+    "buildType": "Release",
     "fullversion": "1.2.50.333.g77514274",
     "links": {
       "win": {
@@ -1291,6 +1380,7 @@
     }
   },
   "1.2.49.439": {
+    "buildType": "Release",
     "fullversion": "1.2.49.439.gfae492c7",
     "links": {
       "win": {
@@ -1305,6 +1395,7 @@
     }
   },
   "1.2.48.405": {
+    "buildType": "Release",
     "fullversion": "1.2.48.405.gf2c48e6f",
     "links": {
       "win": {
@@ -1319,6 +1410,7 @@
     }
   },
   "1.2.48.404": {
+    "buildType": "Release",
     "fullversion": "1.2.48.404.g4bec9359",
     "links": {
       "win": {
@@ -1333,6 +1425,7 @@
     }
   },
   "1.2.47.366": {
+    "buildType": "Release",
     "fullversion": "1.2.47.366.g0d3bd570",
     "links": {
       "win": {
@@ -1347,6 +1440,7 @@
     }
   },
   "1.2.47.364": {
+    "buildType": "Release",
     "fullversion": "1.2.47.364.gf06e5cee",
     "links": {
       "win": {
@@ -1361,6 +1455,7 @@
     }
   },
   "1.2.46.462": {
+    "buildType": "Release",
     "fullversion": "1.2.46.462.gf57913e0",
     "links": {
       "win": {
@@ -1375,6 +1470,7 @@
     }
   },
   "1.2.45.454": {
+    "buildType": "Release",
     "fullversion": "1.2.45.454.gc16ec9f6",
     "links": {
       "win": {
@@ -1389,6 +1485,7 @@
     }
   },
   "1.2.45.451": {
+    "buildType": "Release",
     "fullversion": "1.2.45.451.gac8a666f",
     "links": {
       "win": {
@@ -1403,6 +1500,7 @@
     }
   },
   "1.2.44.405": {
+    "buildType": "Release",
     "fullversion": "1.2.44.405.g81fd6352",
     "links": {
       "win": {
@@ -1417,6 +1515,7 @@
     }
   },
   "1.2.43.420": {
+    "buildType": "Release",
     "fullversion": "1.2.43.420.gc7b23f70",
     "links": {
       "win": {
@@ -1431,6 +1530,7 @@
     }
   },
   "1.2.42.290": {
+    "buildType": "Release",
     "fullversion": "1.2.42.290.g242057a2",
     "links": {
       "win": {
@@ -1445,6 +1545,7 @@
     }
   },
   "1.2.42.288": {
+    "buildType": "Release",
     "fullversion": "1.2.42.288.g204df4d2",
     "links": {
       "win": {
@@ -1459,6 +1560,7 @@
     }
   },
   "1.2.41.434": {
+    "buildType": "Release",
     "fullversion": "1.2.41.434.g39a25e2c",
     "links": {
       "win": {
@@ -1473,6 +1575,7 @@
     }
   },
   "1.2.40.599": {
+    "buildType": "Release",
     "fullversion": "1.2.40.599.g606b7f29",
     "links": {
       "win": {
@@ -1487,6 +1590,7 @@
     }
   },
   "1.2.40.592": {
+    "buildType": "Release",
     "fullversion": "1.2.40.592.gb83da72d",
     "links": {
       "win": {
@@ -1501,6 +1605,7 @@
     }
   },
   "1.2.39.578": {
+    "buildType": "Release",
     "fullversion": "1.2.39.578.g0ea3f38b",
     "links": {
       "win": {
@@ -1515,6 +1620,7 @@
     }
   },
   "1.2.38.720": {
+    "buildType": "Release",
     "fullversion": "1.2.38.720.ga4a70a0e",
     "links": {
       "win": {
@@ -1529,6 +1635,7 @@
     }
   },
   "1.2.37.701": {
+    "buildType": "Release",
     "fullversion": "1.2.37.701.ge66eb7bc",
     "links": {
       "win": {
@@ -1543,6 +1650,7 @@
     }
   },
   "1.2.36.959": {
+    "buildType": "Release",
     "fullversion": "1.2.36.959.g04bf500c",
     "links": {
       "win": {
@@ -1557,6 +1665,7 @@
     }
   },
   "1.2.36.955": {
+    "buildType": "Release",
     "fullversion": "1.2.36.955.gd8cc9372",
     "links": {
       "win": {
@@ -1571,6 +1680,7 @@
     }
   },
   "1.2.35.663": {
+    "buildType": "Release",
     "fullversion": "1.2.35.663.gb699649e",
     "links": {
       "win": {
@@ -1585,6 +1695,7 @@
     }
   },
   "1.2.34.783": {
+    "buildType": "Release",
     "fullversion": "1.2.34.783.g923721d9",
     "links": {
       "win": {
@@ -1599,6 +1710,7 @@
     }
   },
   "1.2.33.1042": {
+    "buildType": "Release",
     "fullversion": "1.2.33.1042.g26c92729",
     "links": {
       "win": {
@@ -1613,6 +1725,7 @@
     }
   },
   "1.2.33.1039": {
+    "buildType": "Release",
     "fullversion": "1.2.33.1039.g8ddb5918",
     "links": {
       "win": {
@@ -1627,6 +1740,7 @@
     }
   },
   "1.2.32.997": {
+    "buildType": "Release",
     "fullversion": "1.2.32.997.g4c6498b6",
     "links": {
       "win": {
@@ -1641,6 +1755,7 @@
     }
   },
   "1.2.32.985": {
+    "buildType": "Release",
     "fullversion": "1.2.32.985.g3be2709c",
     "links": {
       "win": {
@@ -1655,6 +1770,7 @@
     }
   },
   "1.2.31.1205": {
+    "buildType": "Release",
     "fullversion": "1.2.31.1205.g4d59ad7c",
     "links": {
       "win": {
@@ -1669,6 +1785,7 @@
     }
   },
   "1.2.30.1135": {
+    "buildType": "Release",
     "fullversion": "1.2.30.1135.g02fef27a",
     "links": {
       "win": {
@@ -1683,6 +1800,7 @@
     }
   },
   "1.2.29.605": {
+    "buildType": "Release",
     "fullversion": "1.2.29.605.g66a43ceb",
     "links": {
       "win": {
@@ -1697,6 +1815,7 @@
     }
   },
   "1.2.28.581": {
+    "buildType": "Release",
     "fullversion": "1.2.28.581.gd0e8a92c",
     "links": {
       "win": {
@@ -1711,6 +1830,7 @@
     }
   },
   "1.2.26.1187": {
+    "buildType": "Release",
     "fullversion": "1.2.26.1187.g36b715a1",
     "links": {
       "win": {
@@ -1725,6 +1845,7 @@
     }
   },
   "1.2.26.1180": {
+    "buildType": "Release",
     "fullversion": "1.2.26.1180.g6af55bfb",
     "links": {
       "win": {
@@ -1739,6 +1860,7 @@
     }
   },
   "1.2.25.1011": {
+    "buildType": "Release",
     "fullversion": "1.2.25.1011.g0348b2ea",
     "links": {
       "win": {
@@ -1753,6 +1875,7 @@
     }
   },
   "1.2.25.1009": {
+    "buildType": "Release",
     "fullversion": "1.2.25.1009.g075ce884",
     "links": {
       "win": {
@@ -1767,6 +1890,7 @@
     }
   },
   "1.2.24.756": {
+    "buildType": "Release",
     "fullversion": "1.2.24.756.g7a7fc7f0",
     "links": {
       "win": {
@@ -1781,6 +1905,7 @@
     }
   },
   "1.2.24.754": {
+    "buildType": "Release",
     "fullversion": "1.2.24.754.g8c3af7b0",
     "links": {
       "win": {
@@ -1795,6 +1920,7 @@
     }
   },
   "1.2.23.1125": {
+    "buildType": "Release",
     "fullversion": "1.2.23.1125.g920a7ada",
     "links": {
       "win": {
@@ -1809,6 +1935,7 @@
     }
   },
   "1.2.23.1114": {
+    "buildType": "Release",
     "fullversion": "1.2.23.1114.g74573b48",
     "links": {
       "win": {
@@ -1823,6 +1950,7 @@
     }
   },
   "1.2.22.982": {
+    "buildType": "Release",
     "fullversion": "1.2.22.982.g794acc0a",
     "links": {
       "win": {
@@ -1837,6 +1965,7 @@
     }
   },
   "1.2.22.980": {
+    "buildType": "Release",
     "fullversion": "1.2.22.980.g8c845482",
     "links": {
       "win": {
@@ -1851,6 +1980,7 @@
     }
   },
   "1.2.22.975": {
+    "buildType": "Release",
     "fullversion": "1.2.22.975.gd5c7f59d",
     "links": {
       "win": {
@@ -1865,6 +1995,7 @@
     }
   },
   "1.2.21.1104": {
+    "buildType": "Release",
     "fullversion": "1.2.21.1104.g42cf0a50",
     "links": {
       "win": {
@@ -1879,6 +2010,7 @@
     }
   },
   "1.2.20.1218": {
+    "buildType": "Release",
     "fullversion": "1.2.20.1218.g02aff7a4",
     "links": {
       "win": {
@@ -1893,6 +2025,7 @@
     }
   },
   "1.2.20.1216": {
+    "buildType": "Release",
     "fullversion": "1.2.20.1216.ge7a7b92f",
     "links": {
       "win": {
@@ -1907,6 +2040,7 @@
     }
   },
   "1.2.20.1214": {
+    "buildType": "Release",
     "fullversion": "1.2.20.1214.g009959bd",
     "links": {
       "win": {
@@ -1921,6 +2055,7 @@
     }
   },
   "1.2.20.1210": {
+    "buildType": "Release",
     "fullversion": "1.2.20.1210.g2a8a8a57",
     "links": {
       "win": {
@@ -1935,6 +2070,7 @@
     }
   },
   "1.2.19.941": {
+    "buildType": "Release",
     "fullversion": "1.2.19.941.gbf202593",
     "links": {
       "win": {
@@ -1949,6 +2085,7 @@
     }
   },
   "1.2.19.937": {
+    "buildType": "Release",
     "fullversion": "1.2.19.937.gf6e7cff9",
     "links": {
       "win": {
@@ -1963,6 +2100,7 @@
     }
   },
   "1.2.18.999": {
+    "buildType": "Release",
     "fullversion": "1.2.18.999.g9b38fc27",
     "links": {
       "win": {
@@ -1977,6 +2115,7 @@
     }
   },
   "1.2.18.997": {
+    "buildType": "Release",
     "fullversion": "1.2.18.997.g167085cf",
     "links": {
       "win": {
@@ -1991,6 +2130,7 @@
     }
   },
   "1.2.17.834": {
+    "buildType": "Release",
     "fullversion": "1.2.17.834.g26ee1129",
     "links": {
       "win": {
@@ -2005,6 +2145,7 @@
     }
   },
   "1.2.17.832": {
+    "buildType": "Release",
     "fullversion": "1.2.17.832.g15fa351e",
     "links": {
       "win": {
@@ -2019,6 +2160,7 @@
     }
   },
   "1.2.16.947": {
+    "buildType": "Release",
     "fullversion": "1.2.16.947.gcfbaa410",
     "links": {
       "win": {
@@ -2033,6 +2175,7 @@
     }
   },
   "1.2.15.828": {
+    "buildType": "Release",
     "fullversion": "1.2.15.828.g79f41970",
     "links": {
       "win": {
@@ -2047,6 +2190,7 @@
     }
   },
   "1.2.15.826": {
+    "buildType": "Release",
     "fullversion": "1.2.15.826.g633ad967",
     "links": {
       "win": {
@@ -2061,6 +2205,7 @@
     }
   },
   "1.2.14.1149": {
+    "buildType": "Release",
     "fullversion": "1.2.14.1149.ga3ae422d",
     "links": {
       "win": {
@@ -2075,6 +2220,7 @@
     }
   },
   "1.2.14.1141": {
+    "buildType": "Release",
     "fullversion": "1.2.14.1141.gaab16bfe",
     "links": {
       "win": {
@@ -2089,6 +2235,7 @@
     }
   },
   "1.2.13.661": {
+    "buildType": "Release",
     "fullversion": "1.2.13.661.ga588f749",
     "links": {
       "win": {
@@ -2103,6 +2250,7 @@
     }
   },
   "1.2.13.656": {
+    "buildType": "Release",
     "fullversion": "1.2.13.656.gd13f2059",
     "links": {
       "win": {
@@ -2117,6 +2265,7 @@
     }
   },
   "1.2.12.902": {
+    "buildType": "Release",
     "fullversion": "1.2.12.902.g1924b088",
     "links": {
       "win": {
@@ -2131,6 +2280,7 @@
     }
   },
   "1.2.11.916": {
+    "buildType": "Release",
     "fullversion": "1.2.11.916.geb595a67",
     "links": {
       "win": {
@@ -2145,6 +2295,7 @@
     }
   },
   "1.2.11.914": {
+    "buildType": "Release",
     "fullversion": "1.2.11.914.gd3175972",
     "links": {
       "win": {
@@ -2159,6 +2310,7 @@
     }
   },
   "1.2.11.911": {
+    "buildType": "Release",
     "fullversion": "1.2.11.911.ga041e113",
     "links": {
       "win": {
@@ -2173,6 +2325,7 @@
     }
   },
   "1.2.10.760": {
+    "buildType": "Release",
     "fullversion": "1.2.10.760.g52970952",
     "links": {
       "win": {
@@ -2187,6 +2340,7 @@
     }
   },
   "1.2.10.751": {
+    "buildType": "Release",
     "fullversion": "1.2.10.751.g9ce1ecb2",
     "links": {
       "win": {
@@ -2201,6 +2355,7 @@
     }
   },
   "1.2.9.746": {
+    "buildType": "Release",
     "fullversion": "1.2.9.746.gbc57b7ae",
     "links": {
       "win": {
@@ -2215,6 +2370,7 @@
     }
   },
   "1.2.9.743": {
+    "buildType": "Release",
     "fullversion": "1.2.9.743.g85d9593d",
     "links": {
       "win": {
@@ -2229,6 +2385,7 @@
     }
   },
   "1.2.9.741": {
+    "buildType": "Release",
     "fullversion": "1.2.9.741.gb72a2f3b",
     "links": {
       "win": {
@@ -2243,6 +2400,7 @@
     }
   },
   "1.2.9.739": {
+    "buildType": "Release",
     "fullversion": "1.2.9.739.g0da2e75a",
     "links": {
       "win": {
@@ -2257,6 +2415,7 @@
     }
   },
   "1.2.8.923": {
+    "buildType": "Release",
     "fullversion": "1.2.8.923.g4f94bf0d",
     "links": {
       "win": {
@@ -2271,6 +2430,7 @@
     }
   },
   "1.2.8.913": {
+    "buildType": "Release",
     "fullversion": "1.2.8.913.g6ef350af",
     "links": {
       "win": {
@@ -2285,6 +2445,7 @@
     }
   },
   "1.2.8.907": {
+    "buildType": "Release",
     "fullversion": "1.2.8.907.g36fbeacc",
     "links": {
       "win": {
@@ -2299,6 +2460,7 @@
     }
   },
   "1.2.7.1277": {
+    "buildType": "Release",
     "fullversion": "1.2.7.1277.g2b3ce637",
     "links": {
       "win": {
@@ -2313,6 +2475,7 @@
     }
   },
   "1.2.7.1275": {
+    "buildType": "Release",
     "fullversion": "1.2.7.1275.g586348e7",
     "links": {
       "win": {
@@ -2327,6 +2490,7 @@
     }
   },
   "1.2.7.1264": {
+    "buildType": "Release",
     "fullversion": "1.2.7.1264.ge86bd157",
     "links": {
       "win": {
@@ -2341,6 +2505,7 @@
     }
   },
   "1.2.6.863": {
+    "buildType": "Release",
     "fullversion": "1.2.6.863.ge7902f05",
     "links": {
       "win": {
@@ -2355,6 +2520,7 @@
     }
   },
   "1.2.6.861": {
+    "buildType": "Release",
     "fullversion": "1.2.6.861.g9440c6cf",
     "links": {
       "win": {
@@ -2369,6 +2535,7 @@
     }
   },
   "1.2.5.1006": {
+    "buildType": "Release",
     "fullversion": "1.2.5.1006.g22820f93",
     "links": {
       "win": {
@@ -2383,6 +2550,7 @@
     }
   },
   "1.2.5.954": {
+    "buildType": "Release",
     "fullversion": "1.2.5.954.gf42f9f0a",
     "links": {
       "win": {
@@ -2397,6 +2565,7 @@
     }
   },
   "1.2.4.912": {
+    "buildType": "Release",
     "fullversion": "1.2.4.912.g949d5fd0",
     "links": {
       "win": {
@@ -2411,6 +2580,7 @@
     }
   },
   "1.2.4.907": {
+    "buildType": "Release",
     "fullversion": "1.2.4.907.g126451d5",
     "links": {
       "win": {
@@ -2425,6 +2595,7 @@
     }
   },
   "1.2.4.905": {
+    "buildType": "Release",
     "fullversion": "1.2.4.905.gaf3b1e64",
     "links": {
       "win": {
@@ -2439,6 +2610,7 @@
     }
   },
   "1.2.4.893": {
+    "buildType": "Release",
     "fullversion": "1.2.4.893.gc9aee263",
     "links": {
       "win": {
@@ -2453,6 +2625,7 @@
     }
   },
   "1.2.3.1115": {
+    "buildType": "Release",
     "fullversion": "1.2.3.1115.gd61a8f5c",
     "links": {
       "win": {
@@ -2467,6 +2640,7 @@
     }
   },
   "1.2.3.1111": {
+    "buildType": "Release",
     "fullversion": "1.2.3.1111.gce8e6576",
     "links": {
       "win": {
@@ -2481,6 +2655,7 @@
     }
   },
   "1.2.3.1107": {
+    "buildType": "Release",
     "fullversion": "1.2.3.1107.g170f35eb",
     "links": {
       "win": {
@@ -2495,6 +2670,7 @@
     }
   },
   "1.2.2.582": {
+    "buildType": "Release",
     "fullversion": "1.2.2.582.gfae9c59b",
     "links": {
       "win": {
@@ -2509,6 +2685,7 @@
     }
   },
   "1.2.1.968": {
+    "buildType": "Release",
     "fullversion": "1.2.1.968.g21027577",
     "links": {
       "win": {
@@ -2523,6 +2700,7 @@
     }
   },
   "1.2.1.958": {
+    "buildType": "Release",
     "fullversion": "1.2.1.958.g6881e214",
     "links": {
       "win": {
@@ -2537,6 +2715,7 @@
     }
   },
   "1.2.0.1165": {
+    "buildType": "Release",
     "fullversion": "1.2.0.1165.gabf054ab",
     "links": {
       "win": {
@@ -2551,6 +2730,7 @@
     }
   },
   "1.2.0.1163": {
+    "buildType": "Release",
     "fullversion": "1.2.0.1163.ge4c5c91a",
     "links": {
       "win": {
@@ -2565,6 +2745,7 @@
     }
   },
   "1.2.0.1155": {
+    "buildType": "Release",
     "fullversion": "1.2.0.1155.g6314b047",
     "links": {
       "win": {
@@ -2579,6 +2760,7 @@
     }
   },
   "1.1.99.878": {
+    "buildType": "Release",
     "fullversion": "1.1.99.878.g1e4ccc6e",
     "links": {
       "win": {
@@ -2593,6 +2775,7 @@
     }
   },
   "1.1.99.871": {
+    "buildType": "Release",
     "fullversion": "1.1.99.871.g887466fc",
     "links": {
       "win": {
@@ -2607,6 +2790,7 @@
     }
   },
   "1.1.98.691": {
+    "buildType": "Release",
     "fullversion": "1.1.98.691.gf759311c",
     "links": {
       "win": {
@@ -2621,6 +2805,7 @@
     }
   },
   "1.1.98.683": {
+    "buildType": "Release",
     "fullversion": "1.1.98.683.g5a3b77ad",
     "links": {
       "win": {
@@ -2635,6 +2820,7 @@
     }
   },
   "1.1.97.962": {
+    "buildType": "Release",
     "fullversion": "1.1.97.962.g24733a46",
     "links": {
       "win": {
@@ -2649,6 +2835,7 @@
     }
   },
   "1.1.97.956": {
+    "buildType": "Release",
     "fullversion": "1.1.97.956.g8a778e6b",
     "links": {
       "win": {
@@ -2663,6 +2850,7 @@
     }
   },
   "1.1.96.785": {
+    "buildType": "Release",
     "fullversion": "1.1.96.785.g464c973a",
     "links": {
       "win": {
@@ -2677,6 +2865,7 @@
     }
   },
   "1.1.96.783": {
+    "buildType": "Release",
     "fullversion": "1.1.96.783.ga553e8b1",
     "links": {
       "win": {
@@ -2691,6 +2880,7 @@
     }
   },
   "1.1.95.893": {
+    "buildType": "Release",
     "fullversion": "1.1.95.893.g6cf4d40c",
     "links": {
       "win": {
@@ -2705,6 +2895,7 @@
     }
   },
   "1.1.95.889": {
+    "buildType": "Release",
     "fullversion": "1.1.95.889.gfc9a996d",
     "links": {
       "win": {
@@ -2719,6 +2910,7 @@
     }
   },
   "1.1.94.872": {
+    "buildType": "Release",
     "fullversion": "1.1.94.872.g7a9200fe",
     "links": {
       "win": {
@@ -2733,6 +2925,7 @@
     }
   },
   "1.1.94.870": {
+    "buildType": "Release",
     "fullversion": "1.1.94.870.gf994cb0b",
     "links": {
       "win": {
@@ -2747,6 +2940,7 @@
     }
   },
   "1.1.94.864": {
+    "buildType": "Release",
     "fullversion": "1.1.94.864.g540a4cc6",
     "links": {
       "win": {
@@ -2761,6 +2955,7 @@
     }
   },
   "1.1.93.896": {
+    "buildType": "Release",
     "fullversion": "1.1.93.896.g3ae3b4f3",
     "links": {
       "win": {
@@ -2775,6 +2970,7 @@
     }
   },
   "1.1.92.647": {
+    "buildType": "Release",
     "fullversion": "1.1.92.647.ga4397eb7",
     "links": {
       "win": {
@@ -2789,6 +2985,7 @@
     }
   },
   "1.1.92.644": {
+    "buildType": "Release",
     "fullversion": "1.1.92.644.g1de7dc5f",
     "links": {
       "win": {
@@ -2803,6 +3000,7 @@
     }
   },
   "1.1.91.824": {
+    "buildType": "Release",
     "fullversion": "1.1.91.824.g07f1e963",
     "links": {
       "win": {
@@ -2817,6 +3015,7 @@
     }
   },
   "1.1.90.859": {
+    "buildType": "Release",
     "fullversion": "1.1.90.859.gf1bb1e36",
     "links": {
       "win": {
@@ -2831,6 +3030,7 @@
     }
   },
   "1.1.90.855": {
+    "buildType": "Release",
     "fullversion": "1.1.90.855.ga73cc2ce",
     "links": {
       "win": {
@@ -2845,6 +3045,7 @@
     }
   },
   "1.1.89.862": {
+    "buildType": "Release",
     "fullversion": "1.1.89.862.g94554d24",
     "links": {
       "win": {
@@ -2859,6 +3060,7 @@
     }
   },
   "1.1.89.858": {
+    "buildType": "Release",
     "fullversion": "1.1.89.858.ge2edefbd",
     "links": {
       "win": {
@@ -2873,6 +3075,7 @@
     }
   },
   "1.1.89.854": {
+    "buildType": "Release",
     "fullversion": "1.1.89.854.g014f081d",
     "links": {
       "win": {
@@ -2887,6 +3090,7 @@
     }
   },
   "1.1.88.612": {
+    "buildType": "Release",
     "fullversion": "1.1.88.612.gcc529952",
     "links": {
       "win": {
@@ -2901,6 +3105,7 @@
     }
   },
   "1.1.88.595": {
+    "buildType": "Release",
     "fullversion": "1.1.88.595.geb13be4d",
     "links": {
       "win": {
@@ -2915,6 +3120,7 @@
     }
   },
   "1.1.87.612": {
+    "buildType": "Release",
     "fullversion": "1.1.87.612.gf8d110e2",
     "links": {
       "win": {
@@ -2929,6 +3135,7 @@
     }
   },
   "1.1.86.857": {
+    "buildType": "Release",
     "fullversion": "1.1.86.857.g3751ee08",
     "links": {
       "win": {
@@ -2943,6 +3150,7 @@
     }
   },
   "1.1.85.895": {
+    "buildType": "Release",
     "fullversion": "1.1.85.895.g2a71e1b8",
     "links": {
       "win": {
@@ -2957,6 +3165,7 @@
     }
   },
   "1.1.85.884": {
+    "buildType": "Release",
     "fullversion": "1.1.85.884.g2cd74be6",
     "links": {
       "win": {
@@ -2971,6 +3180,7 @@
     }
   },
   "1.1.84.716": {
+    "buildType": "Release",
     "fullversion": "1.1.84.716.gc5f8b819",
     "links": {
       "win": {
@@ -2985,6 +3195,7 @@
     }
   },
   "1.1.83.956": {
+    "buildType": "Release",
     "fullversion": "1.1.83.956.gbe7ea9a7",
     "links": {
       "win": {
@@ -2999,6 +3210,7 @@
     }
   },
   "1.1.83.954": {
+    "buildType": "Release",
     "fullversion": "1.1.83.954.gd226dfe8",
     "links": {
       "win": {
@@ -3013,6 +3225,7 @@
     }
   },
   "1.1.83.944": {
+    "buildType": "Release",
     "fullversion": "1.1.83.944.gf1f41e42",
     "links": {
       "win": {
@@ -3027,6 +3240,7 @@
     }
   },
   "1.1.82.760": {
+    "buildType": "Release",
     "fullversion": "1.1.82.760.g71827af3",
     "links": {
       "win": {
@@ -3041,6 +3255,7 @@
     }
   },
   "1.1.82.758": {
+    "buildType": "Release",
     "fullversion": "1.1.82.758.g8b7b66c7",
     "links": {
       "win": {
@@ -3055,6 +3270,7 @@
     }
   },
   "1.1.82.754": {
+    "buildType": "Release",
     "fullversion": "1.1.82.754.g1e7b8b8e",
     "links": {
       "win": {
@@ -3069,6 +3285,7 @@
     }
   },
   "1.1.81.604": {
+    "buildType": "Release",
     "fullversion": "1.1.81.604.gccacfc8c",
     "links": {
       "win": {
@@ -3083,6 +3300,7 @@
     }
   },
   "1.1.81.598": {
+    "buildType": "Release",
     "fullversion": "1.1.81.598.g1d1c4603",
     "links": {
       "win": {
@@ -3097,6 +3315,7 @@
     }
   },
   "1.1.80.699": {
+    "buildType": "Release",
     "fullversion": "1.1.80.699.gc3dac750",
     "links": {
       "win": {
@@ -3111,6 +3330,7 @@
     }
   },
   "1.1.79.763": {
+    "buildType": "Release",
     "fullversion": "1.1.79.763.gc2965cdf",
     "links": {
       "win": {
@@ -3125,6 +3345,7 @@
     }
   },
   "1.1.78.765": {
+    "buildType": "Release",
     "fullversion": "1.1.78.765.g5ea20b00",
     "links": {
       "win": {
@@ -3139,6 +3360,7 @@
     }
   },
   "1.1.77.645": {
+    "buildType": "Release",
     "fullversion": "1.1.77.645.gd783ecf7",
     "links": {
       "win": {
@@ -3153,6 +3375,7 @@
     }
   },
   "1.1.77.643": {
+    "buildType": "Release",
     "fullversion": "1.1.77.643.g3c4c6fc6",
     "links": {
       "win": {
@@ -3167,6 +3390,7 @@
     }
   },
   "1.1.76.447": {
+    "buildType": "Release",
     "fullversion": "1.1.76.447.g11f432d8",
     "links": {
       "win": {
@@ -3181,6 +3405,7 @@
     }
   },
   "1.1.75.572": {
+    "buildType": "Release",
     "fullversion": "1.1.75.572.g2d769d0b",
     "links": {
       "win": {
@@ -3195,6 +3420,7 @@
     }
   },
   "1.1.74.631": {
+    "buildType": "Release",
     "fullversion": "1.1.74.631.g0b24d9ad",
     "links": {
       "win": {
@@ -3209,6 +3435,7 @@
     }
   },
   "1.1.73.517": {
+    "buildType": "Release",
     "fullversion": "1.1.73.517.gbef50fdb",
     "links": {
       "win": {
@@ -3223,6 +3450,7 @@
     }
   },
   "1.1.73.515": {
+    "buildType": "Release",
     "fullversion": "1.1.73.515.g85e282e2",
     "links": {
       "win": {
@@ -3237,6 +3465,7 @@
     }
   },
   "1.1.72.439": {
+    "buildType": "Release",
     "fullversion": "1.1.72.439.gc253025e",
     "links": {
       "win": {
@@ -3251,6 +3480,7 @@
     }
   },
   "1.1.72.433": {
+    "buildType": "Release",
     "fullversion": "1.1.72.433.gf7f9643b",
     "links": {
       "win": {
@@ -3265,6 +3495,7 @@
     }
   },
   "1.1.71.560": {
+    "buildType": "Release",
     "fullversion": "1.1.71.560.gc21c3367",
     "links": {
       "win": {
@@ -3279,6 +3510,7 @@
     }
   },
   "1.1.71.550": {
+    "buildType": "Release",
     "fullversion": "1.1.71.550.g94dab98a",
     "links": {
       "win": {
@@ -3293,6 +3525,7 @@
     }
   },
   "1.1.70.610": {
+    "buildType": "Release",
     "fullversion": "1.1.70.610.g4585142b",
     "links": {
       "win": {
@@ -3307,6 +3540,7 @@
     }
   },
   "1.1.69.612": {
+    "buildType": "Release",
     "fullversion": "1.1.69.612.gb7409abc",
     "links": {
       "win": {
@@ -3321,6 +3555,7 @@
     }
   },
   "1.1.68.632": {
+    "buildType": "Release",
     "fullversion": "1.1.68.632.g2b11de83",
     "links": {
       "win": {
@@ -3335,6 +3570,7 @@
     }
   },
   "1.1.68.628": {
+    "buildType": "Release",
     "fullversion": "1.1.68.628.geb44bd66",
     "links": {
       "win": {
@@ -3349,6 +3585,7 @@
     }
   },
   "1.1.68.626": {
+    "buildType": "Release",
     "fullversion": "1.1.68.626.g3f0fff0a",
     "links": {
       "win": {
@@ -3363,6 +3600,7 @@
     }
   },
   "1.1.68.624": {
+    "buildType": "Release",
     "fullversion": "1.1.68.624.g4435cb7f",
     "links": {
       "win": {
@@ -3377,6 +3615,7 @@
     }
   },
   "1.1.67.586": {
+    "buildType": "Release",
     "fullversion": "1.1.67.586.gbb5ef64e",
     "links": {
       "win": {
@@ -3391,6 +3630,7 @@
     }
   },
   "1.1.67.584": {
+    "buildType": "Release",
     "fullversion": "1.1.67.584.gc0d1ad42",
     "links": {
       "win": {
@@ -3405,6 +3645,7 @@
     }
   },
   "1.1.67.577": {
+    "buildType": "Release",
     "fullversion": "1.1.67.577.gfe512a7c",
     "links": {
       "win": {
@@ -3419,6 +3660,7 @@
     }
   },
   "1.1.66.580": {
+    "buildType": "Release",
     "fullversion": "1.1.66.580.gbd43cbc9",
     "links": {
       "win": {
@@ -3433,6 +3675,7 @@
     }
   },
   "1.1.66.578": {
+    "buildType": "Release",
     "fullversion": "1.1.66.578.gc54d0f69",
     "links": {
       "win": {
@@ -3447,6 +3690,7 @@
     }
   },
   "1.1.65.643": {
+    "buildType": "Release",
     "fullversion": "1.1.65.643.g2d707698",
     "links": {
       "win": {
@@ -3461,6 +3705,7 @@
     }
   },
   "1.1.64.561": {
+    "buildType": "Release",
     "fullversion": "1.1.64.561.g71bd09eb",
     "links": {
       "win": {
@@ -3475,6 +3720,7 @@
     }
   },
   "1.1.63.568": {
+    "buildType": "Release",
     "fullversion": "1.1.63.568.gda8cb5ac",
     "links": {
       "win": {
@@ -3489,6 +3735,7 @@
     }
   },
   "1.1.63.566": {
+    "buildType": "Release",
     "fullversion": "1.1.63.566.g62675f37",
     "links": {
       "win": {
@@ -3503,6 +3750,7 @@
     }
   },
   "1.1.62.583": {
+    "buildType": "Release",
     "fullversion": "1.1.62.583.gdac868ed",
     "links": {
       "win": {
@@ -3517,6 +3765,7 @@
     }
   },
   "1.1.61.583": {
+    "buildType": "Release",
     "fullversion": "1.1.61.583.gad060c66",
     "links": {
       "win": {
@@ -3531,6 +3780,7 @@
     }
   },
   "1.1.60.672": {
+    "buildType": "Release",
     "fullversion": "1.1.60.672.g6ad9c215",
     "links": {
       "win": {
@@ -3545,6 +3795,7 @@
     }
   },
   "1.1.60.668": {
+    "buildType": "Release",
     "fullversion": "1.1.60.668.gff09d345",
     "links": {
       "win": {
@@ -3559,6 +3810,7 @@
     }
   },
   "1.1.59.714": {
+    "buildType": "Release",
     "fullversion": "1.1.59.714.g7e040462",
     "links": {
       "win": {
@@ -3573,6 +3825,7 @@
     }
   },
   "1.1.59.712": {
+    "buildType": "Release",
     "fullversion": "1.1.59.712.g54f36e5d",
     "links": {
       "win": {
@@ -3587,6 +3840,7 @@
     }
   },
   "1.1.59.710": {
+    "buildType": "Release",
     "fullversion": "1.1.59.710.g134abcca",
     "links": {
       "win": {
