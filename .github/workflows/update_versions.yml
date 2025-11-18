@@ -1,5 +1,4 @@
 name: Update Version
-
 on:
   workflow_dispatch:
     inputs:
@@ -13,33 +12,33 @@ on:
         description: 'Build type (e.g., Master, Release)'
         required: false
         default: 'false'
+
 jobs:
   update-version:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
         token: ${{ secrets.PERSONAL_TOKEN }}
-
+        
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.2
-
+        
     - name: Update version in versions.json
       run: |
         data="${{ github.event.inputs.datajson }}"
         build_type="${{ github.event.inputs.buildType }}"
         python3 update_version.py "$data" "$build_type"
-
-    - name: Commit changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add versions.json
-        git commit -m "Added version ${{ github.event.inputs.version }}"
-        git push "https://${{ secrets.PERSONAL_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main
+    
+    - name: Commit and push changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Added version ${{ github.event.inputs.version }}"
+        file_pattern: 'versions.json'
+        commit_user_name: 'GitHub Action'
+        commit_user_email: 'action@github.com'
