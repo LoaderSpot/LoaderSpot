@@ -1259,6 +1259,21 @@
       }
     }
   },
+  "1.2.58.318": {
+    "buildType": "Master",
+    "fullversion": "1.2.58.318.gc4769917",
+    "links": {
+      "win": {
+        "x86": "",
+        "x64": "https://upgrade.scdn.co/upgrade/client/win32-x86_64/spotify_installer-1.2.58.318.gc4769917-3858.exe",
+        "arm64": "https://upgrade.scdn.co/upgrade/client/win32-arm64/spotify_installer-1.2.58.318.gc4769917-3872.exe"
+      },
+      "mac": {
+        "intel": "https://upgrade.scdn.co/upgrade/client/osx-x86_64/spotify-autoupdate-1.2.58.318.gc4769917-1352.tbz",
+        "arm64": "https://upgrade.scdn.co/upgrade/client/osx-arm64/spotify-autoupdate-1.2.58.318.gc4769917-1346.tbz"
+      }
+    }
+  },
   "1.2.57.463": {
     "buildType": "Release",
     "fullversion": "1.2.57.463.g4f748c64",
