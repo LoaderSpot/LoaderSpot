@@ -4,7 +4,7 @@ on:
     types: [webhook-event]
     
 concurrency:
-  group: version-check-${{ github.event.client_payload.v }}
+  group: delayed-version-check
   cancel-in-progress: false    
 
 jobs:
