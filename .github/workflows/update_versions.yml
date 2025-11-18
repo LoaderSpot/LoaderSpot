@@ -39,7 +39,7 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
-        MAX_RETRIES=20  # Увеличено с 10 до 20
+        MAX_RETRIES=20
         RETRY_COUNT=0
         
         # Случайная задержка 0-10 секунд в начале
@@ -60,8 +60,9 @@ jobs:
           git checkout main
           
           # Run Python script on fresh data
-          # Передаём JSON через stdin (самый надёжный способ)
-          echo "$DATA_JSON" | python3 update_version.py "$BUILD_TYPE"
+          # Создаём временный файл для передачи JSON
+          echo "$DATA_JSON" > /tmp/data.json
+          python3 update_version.py /tmp/data.json "$BUILD_TYPE"
           
           # Check if there are changes
           if ! git diff --quiet versions.json; then
