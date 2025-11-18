@@ -29,17 +29,64 @@ jobs:
       with:
         python-version: 3.12.2
         
-    - name: Update version in versions.json
+    - name: Update version and commit with retry
+      env:
+        DATA_JSON: ${{ github.event.inputs.datajson }}
+        BUILD_TYPE: ${{ github.event.inputs.buildType }}
+        VERSION: ${{ github.event.inputs.version }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
       run: |
-        data="${{ github.event.inputs.datajson }}"
-        build_type="${{ github.event.inputs.buildType }}"
-        python3 update_version.py "$data" "$build_type"
-    
-    - name: Commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Added version ${{ github.event.inputs.version }}"
-        file_pattern: 'versions.json'
-        commit_user_name: 'GitHub Action'
-        commit_user_email: 'action@github.com'
-        push_options: '--force-with-lease' 
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        MAX_RETRIES=20  # Увеличено с 10 до 20
+        RETRY_COUNT=0
+        
+        # Случайная задержка 0-10 секунд в начале
+        RANDOM_DELAY=$((RANDOM % 10))
+        echo "Initial random delay: ${RANDOM_DELAY}s"
+        sleep $RANDOM_DELAY
+        
+        while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+          echo "Attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES"
+          
+          # Fetch latest changes
+          git fetch origin main
+          
+          # Reset to remote state (discard local commits)
+          git reset --hard origin/main
+          
+          # Re-checkout to ensure clean state
+          git checkout main
+          
+          # Run Python script on fresh data
+          python3 update_version.py "$DATA_JSON" "$BUILD_TYPE"
+          
+          # Check if there are changes
+          if ! git diff --quiet versions.json; then
+            git add versions.json
+            git commit -m "Added version $VERSION"
+            
+            # Try to push
+            if git push "https://$GITHUB_TOKEN@github.com/${{ github.repository }}.git" HEAD:main; then
+              echo "✅ Successfully pushed version $VERSION"
+              exit 0
+            else
+              echo "⚠️ Push failed, retrying..."
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              
+              # Экспоненциальная задержка с jitter (случайностью)
+              BASE_DELAY=$((RETRY_COUNT * 2))
+              JITTER=$((RANDOM % 5))
+              TOTAL_DELAY=$((BASE_DELAY + JITTER))
+              echo "Waiting ${TOTAL_DELAY}s before retry..."
+              sleep $TOTAL_DELAY
+            fi
+          else
+            echo "ℹ️ No changes detected in versions.json"
+            exit 0
+          fi
+        done
+        
+        echo "❌ Failed to push after $MAX_RETRIES attempts"
+        exit 1
