@@ -2,11 +2,19 @@
 import json
 import re
 import sys
+import os
 
 
-def update_version(data_json: str, build_type: str = None, version_file: str = "versions.json") -> bool:
+def update_version(data_input, build_type: str = None, version_file: str = "versions.json") -> bool:
     try:
-        data = json.loads(data_json)
+        # Если это путь к файлу
+        if os.path.isfile(data_input):
+            with open(data_input, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        # Если это JSON строка
+        else:
+            data = json.loads(data_input)
+        
         version_key = list(data.keys())[0]
         version_data = data[version_key]
 
@@ -38,8 +46,8 @@ def update_version(data_json: str, build_type: str = None, version_file: str = "
     except json.JSONDecodeError as e:
         print(f"JSON parse error: {e}", file=sys.stderr)
         return False
-    except FileNotFoundError:
-        print(f"File {version_file} not found", file=sys.stderr)
+    except FileNotFoundError as e:
+        print(f"File not found: {e}", file=sys.stderr)
         return False
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -47,15 +55,22 @@ def update_version(data_json: str, build_type: str = None, version_file: str = "
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python update_version.py '<json_data>' [build_type] [version_file]", file=sys.stderr)
+    # Проверяем переменную окружения DATA_JSON_ENV (приоритет)
+    if 'DATA_JSON_ENV' in os.environ:
+        data_input = os.environ['DATA_JSON_ENV']
+        build_type = sys.argv[1] if len(sys.argv) > 1 else None
+        version_file = sys.argv[2] if len(sys.argv) > 2 else "versions.json"
+    # Иначе используем аргументы командной строки
+    elif len(sys.argv) >= 2:
+        data_input = sys.argv[1]  # Может быть путь к файлу или JSON строка
+        build_type = sys.argv[2] if len(sys.argv) > 2 else None
+        version_file = sys.argv[3] if len(sys.argv) > 3 else "versions.json"
+    else:
+        print("Usage: python update_version.py <json_file_or_string> [build_type] [version_file]", file=sys.stderr)
+        print("Or set DATA_JSON_ENV environment variable", file=sys.stderr)
         sys.exit(1)
     
-    data_json = sys.argv[1]
-    build_type = sys.argv[2] if len(sys.argv) > 2 else None
-    version_file = sys.argv[3] if len(sys.argv) > 3 else "versions.json"
-    
-    success = update_version(data_json, build_type, version_file)
+    success = update_version(data_input, build_type, version_file)
     sys.exit(0 if success else 1)
 
 
