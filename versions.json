@@ -1379,6 +1379,21 @@
       }
     }
   },
+  "1.2.52.290": {
+    "buildType": "Master",
+    "fullversion": "1.2.52.290.gabcab511",
+    "links": {
+      "win": {
+        "x86": "https://upgrade.scdn.co/upgrade/client/win32-x86/spotify_installer-1.2.52.290.gabcab511-428.exe",
+        "x64": "https://upgrade.scdn.co/upgrade/client/win32-x86_64/spotify_installer-1.2.52.290.gabcab511-422.exe",
+        "arm64": "https://upgrade.scdn.co/upgrade/client/win32-arm64/spotify_installer-1.2.52.290.gabcab511-421.exe"
+      },
+      "mac": {
+        "intel": "https://upgrade.scdn.co/upgrade/client/osx-x86_64/spotify-autoupdate-1.2.52.290.gabcab511-626.tbz",
+        "arm64": "https://upgrade.scdn.co/upgrade/client/osx-arm64/spotify-autoupdate-1.2.52.290.gabcab511-625.tbz"
+      }
+    }
+  },
   "1.2.51.345": {
     "buildType": "Release",
     "fullversion": "1.2.51.345.gcc39d911",
