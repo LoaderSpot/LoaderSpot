@@ -4,9 +4,12 @@ import re
 import sys
 
 
-def update_version(data_json: str, build_type: str = None, version_file: str = "versions.json") -> bool:
+def update_version(json_file_path: str, build_type: str = None, version_file: str = "versions.json") -> bool:
     try:
-        data = json.loads(data_json)
+        # Читаем JSON из файла вместо строки
+        with open(json_file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)  # load вместо loads!
+        
         version_key = list(data.keys())[0]
         version_data = data[version_key]
 
@@ -38,8 +41,8 @@ def update_version(data_json: str, build_type: str = None, version_file: str = "
     except json.JSONDecodeError as e:
         print(f"JSON parse error: {e}", file=sys.stderr)
         return False
-    except FileNotFoundError:
-        print(f"File {version_file} not found", file=sys.stderr)
+    except FileNotFoundError as e:
+        print(f"File not found: {e}", file=sys.stderr)
         return False
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -48,14 +51,14 @@ def update_version(data_json: str, build_type: str = None, version_file: str = "
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python update_version.py '<json_data>' [build_type] [version_file]", file=sys.stderr)
+        print("Usage: python update_version.py <json_file_path> [build_type] [version_file]", file=sys.stderr)
         sys.exit(1)
     
-    data_json = sys.argv[1]
+    json_file_path = sys.argv[1]  # Теперь это путь к файлу, а не JSON строка
     build_type = sys.argv[2] if len(sys.argv) > 2 else None
     version_file = sys.argv[3] if len(sys.argv) > 3 else "versions.json"
     
-    success = update_version(data_json, build_type, version_file)
+    success = update_version(json_file_path, build_type, version_file)
     sys.exit(0 if success else 1)
 
 
