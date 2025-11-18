@@ -1,54 +1,45 @@
-name: Version Check
+name: Update Version
+
 on:
-  repository_dispatch:
-    types: [webhook-event]
-    
-concurrency:
-  group: delayed-version-check
-  cancel-in-progress: false    
-
+  workflow_dispatch:
+    inputs:
+      datajson:
+        description: 'Version to update'
+        required: true
+      version:
+        description: 'Another version parameter'
+        required: true
+      buildType:
+        description: 'Build type (e.g., Master, Release)'
+        required: false
+        default: 'false'
 jobs:
-  version-search:
+  update-version:
     runs-on: ubuntu-latest
-    outputs:
-      versions: ${{ steps.search.outputs.versions }}
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        token: ${{ secrets.PERSONAL_TOKEN }}
 
-      - name: Download latest loaderspot_cli_linux_x64
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release download --repo ${{ github.repository }} --pattern "loaderspot-cli-linux-x64" --output loaderspot_cli
-          chmod +x loaderspot_cli
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.2
 
-      - name: Version search
-        id: search
-        if: github.event.client_payload.v && github.event.client_payload.s
-        env:
-          v: ${{ github.event.client_payload.v }}
-          s: ${{ github.event.client_payload.s }}
-        run: |
-          {
-            echo 'versions<<EOF'
-            ./loaderspot_cli --version "$v" --connections 300 --ladder-search
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
+    - name: Update version in versions.json
+      run: |
+        data="${{ github.event.inputs.datajson }}"
+        build_type="${{ github.event.inputs.buildType }}"
+        python3 update_version.py "$data" "$build_type"
 
-  get-build-and-send:
-    runs-on: windows-latest
-    needs: version-search
-    if: success() && needs.version-search.outputs.versions
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Get build info and send to GAS
-        shell: pwsh
-        env:
-          GOOGLE_APPS_URL: ${{ secrets.GOOGLE_APPS_URL }}
-          VERSIONS: ${{ needs.version-search.outputs.versions }}
-          SOURCE: ${{ github.event.client_payload.s }}
-        run: |
-          ./check-build-version.ps1 -versions "$env:VERSIONS" -source "$env:SOURCE" -googleAppsUrl "$env:GOOGLE_APPS_URL"
+    - name: Commit changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add versions.json
+        git commit -m "Added version ${{ github.event.inputs.version }}"
+        git push "https://${{ secrets.PERSONAL_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main
