@@ -2,13 +2,18 @@
 import json
 import re
 import sys
+import os
 
 
-def update_version(json_file_path: str, build_type: str = None, version_file: str = "versions.json") -> bool:
+def update_version(data_input, build_type: str = None, version_file: str = "versions.json") -> bool:
     try:
-        # Читаем JSON из файла вместо строки
-        with open(json_file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)  # load вместо loads!
+        # Если это путь к файлу
+        if os.path.isfile(data_input):
+            with open(data_input, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        # Если это JSON строка
+        else:
+            data = json.loads(data_input)
         
         version_key = list(data.keys())[0]
         version_data = data[version_key]
@@ -50,15 +55,22 @@ def update_version(json_file_path: str, build_type: str = None, version_file: st
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python update_version.py <json_file_path> [build_type] [version_file]", file=sys.stderr)
+    # Проверяем переменную окружения DATA_JSON_ENV (приоритет)
+    if 'DATA_JSON_ENV' in os.environ:
+        data_input = os.environ['DATA_JSON_ENV']
+        build_type = sys.argv[1] if len(sys.argv) > 1 else None
+        version_file = sys.argv[2] if len(sys.argv) > 2 else "versions.json"
+    # Иначе используем аргументы командной строки
+    elif len(sys.argv) >= 2:
+        data_input = sys.argv[1]  # Может быть путь к файлу или JSON строка
+        build_type = sys.argv[2] if len(sys.argv) > 2 else None
+        version_file = sys.argv[3] if len(sys.argv) > 3 else "versions.json"
+    else:
+        print("Usage: python update_version.py <json_file_or_string> [build_type] [version_file]", file=sys.stderr)
+        print("Or set DATA_JSON_ENV environment variable", file=sys.stderr)
         sys.exit(1)
     
-    json_file_path = sys.argv[1]  # Теперь это путь к файлу, а не JSON строка
-    build_type = sys.argv[2] if len(sys.argv) > 2 else None
-    version_file = sys.argv[3] if len(sys.argv) > 3 else "versions.json"
-    
-    success = update_version(json_file_path, build_type, version_file)
+    success = update_version(data_input, build_type, version_file)
     sys.exit(0 if success else 1)
 
 
