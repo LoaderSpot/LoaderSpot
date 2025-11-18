@@ -42,3 +42,4 @@ jobs:
         file_pattern: 'versions.json'
         commit_user_name: 'GitHub Action'
         commit_user_email: 'action@github.com'
+        push_options: '--force-with-lease' 
