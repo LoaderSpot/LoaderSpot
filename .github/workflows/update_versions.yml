@@ -60,7 +60,8 @@ jobs:
           git checkout main
           
           # Run Python script on fresh data
-          python3 update_version.py "$DATA_JSON" "$BUILD_TYPE"
+          # Передаём JSON через stdin (самый надёжный способ)
+          echo "$DATA_JSON" | python3 update_version.py "$BUILD_TYPE"
           
           # Check if there are changes
           if ! git diff --quiet versions.json; then
