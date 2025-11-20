@@ -17,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout source repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Checkout target repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: LoaderSpot/table
           path: table
