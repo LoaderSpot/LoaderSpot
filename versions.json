@@ -1395,7 +1395,7 @@
     }
   },
   "1.2.70.254": {
-    "buildType": "Release",
+    "buildType": "Master",
     "fullversion": "1.2.70.254.gc8d9cbb8",
     "links": {
       "win": {
@@ -1410,7 +1410,7 @@
     }
   },
   "1.2.70.253": {
-    "buildType": "Release",
+    "buildType": "Master",
     "fullversion": "1.2.70.253.g75b5048f",
     "links": {
       "win": {
