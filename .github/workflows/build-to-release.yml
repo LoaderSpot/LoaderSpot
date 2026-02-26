@@ -61,7 +61,7 @@ jobs:
         Write-Host "CLI executable ready: loaderspot-cli-win-$env:ARCH.exe"
 
     - name: Upload Windows artifacts
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: windows-artifacts-${{ matrix.arch }}
         path: artifacts/*
@@ -110,7 +110,7 @@ jobs:
           echo "CLI executable ready: loaderspot-cli-linux-x64"
 
       - name: Upload Linux artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: linux-artifacts-x64
           path: artifacts/*
