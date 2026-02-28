@@ -123,9 +123,9 @@ def commit_changes(new_versions):
         # Формируем сообщение коммита в зависимости от количества новых версий
         if new_versions:
             commit_message = (
-                f"Added deb version {new_versions[0][0]}"
+                f"Added deb version {new_versions[0][1]}"
                 if len(new_versions) == 1
-                else f"Added deb versions: {', '.join(v[0] for v in new_versions)}"
+                else f"Added deb versions: {', '.join(v[1] for v in new_versions)}"
             )
         else:
             commit_message = "Update Spotify versions"
