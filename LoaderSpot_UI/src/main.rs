@@ -1,13 +1,13 @@
 // Hide console window on Windows
 #![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
 
+use crossbeam_channel::{unbounded, Receiver, Sender};
 use eframe::egui;
 use reqwest::Client;
 use serde::Deserialize;
 use std::collections::{HashMap, VecDeque};
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::mpsc::{channel, Receiver, Sender};
-use std::sync::{Arc, Mutex};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::{Arc, OnceLock};
 use std::time::Instant;
 use tokio::runtime::Runtime;
 
@@ -31,13 +31,13 @@ impl Platform {
         }
     }
 
-    fn path_template(&self) -> &str {
+    fn generate_path(&self, version: &str, number: i32) -> String {
         match self {
-            Platform::WinX86 => "win32-x86/spotify_installer-{version}-{number}.exe",
-            Platform::WinX64 => "win32-x86_64/spotify_installer-{version}-{number}.exe",
-            Platform::WinArm64 => "win32-arm64/spotify_installer-{version}-{number}.exe",
-            Platform::MacOsIntel => "osx-x86_64/spotify-autoupdate-{version}-{number}.tbz",
-            Platform::MacOsArm64 => "osx-arm64/spotify-autoupdate-{version}-{number}.tbz",
+            Platform::WinX86 => format!("win32-x86/spotify_installer-{version}-{number}.exe"),
+            Platform::WinX64 => format!("win32-x86_64/spotify_installer-{version}-{number}.exe"),
+            Platform::WinArm64 => format!("win32-arm64/spotify_installer-{version}-{number}.exe"),
+            Platform::MacOsIntel => format!("osx-x86_64/spotify-autoupdate-{version}-{number}.tbz"),
+            Platform::MacOsArm64 => format!("osx-arm64/spotify-autoupdate-{version}-{number}.tbz"),
         }
     }
 
@@ -63,11 +63,11 @@ impl UrlGenerator {
     const BASE_URL: &'static str = "https://upgrade.scdn.co/upgrade/client/";
 
     fn generate_url(platform: Platform, version: &str, number: i32) -> String {
-        let path = platform
-            .path_template()
-            .replace("{version}", version)
-            .replace("{number}", &number.to_string());
-        format!("{}{}", Self::BASE_URL, path)
+        format!(
+            "{}{}",
+            Self::BASE_URL,
+            platform.generate_path(version, number)
+        )
     }
 }
 
@@ -83,15 +83,12 @@ fn extract_base_version(version: &str) -> String {
 
 #[allow(dead_code)]
 fn should_use_win_x86(version: &str) -> bool {
-    let base_version = extract_base_version(version);
-    let parts: Vec<&str> = base_version.split('.').collect();
+    let mut parts = version.split('.');
 
-    if parts.len() >= 3 {
-        if let (Ok(major), Ok(minor), Ok(patch)) = (
-            parts[0].parse::<u32>(),
-            parts[1].parse::<u32>(),
-            parts[2].parse::<u32>(),
-        ) {
+    if let (Some(p1), Some(p2), Some(p3)) = (parts.next(), parts.next(), parts.next()) {
+        if let (Ok(major), Ok(minor), Ok(patch)) =
+            (p1.parse::<u32>(), p2.parse::<u32>(), p3.parse::<u32>())
+        {
             return (major, minor, patch) <= (1, 2, 53);
         }
     }
@@ -99,7 +96,8 @@ fn should_use_win_x86(version: &str) -> bool {
 }
 
 fn validate_version(version: &str) -> bool {
-    let re = regex::Regex::new(r"^\d+\.\d+\.\d+\.\d+\.g[0-9a-f]{8}$").unwrap();
+    static RE: OnceLock<regex::Regex> = OnceLock::new();
+    let re = RE.get_or_init(|| regex::Regex::new(r"^\d+\.\d+\.\d+\.\d+\.g[0-9a-f]{8}$").unwrap());
     re.is_match(version)
 }
 
@@ -117,8 +115,23 @@ const MAX_CONNECTION_OPTIONS: [usize; 6] = [50, 100, 150, 200, 250, 300];
 
 async fn check_url(client: &Client, url: String, platform: Platform) -> Option<(String, Platform)> {
     match client.head(&url).send().await {
-        Ok(response) if response.status().is_success() => Some((url, platform)),
-        _ => None,
+        Ok(response) => {
+            if response.status().is_success() {
+                Some((url, platform))
+            } else if response.status() == reqwest::StatusCode::TOO_MANY_REQUESTS {
+                eprintln!(
+                    "RATE LIMITED (429)! Server blocked the request for: {}",
+                    url
+                );
+                None
+            } else {
+                None
+            }
+        }
+        Err(e) => {
+            eprintln!("Network error: {}", e);
+            None
+        }
     }
 }
 
@@ -151,7 +164,7 @@ async fn check_version_and_submit(client: &Client, version: &str) {
 
     let version_exists = versions_json
         .values()
-        .any(|v| v.fullversion.as_ref().map_or(false, |fv| fv == version));
+        .any(|v| v.fullversion.as_ref().is_some_and(|fv| fv == version));
 
     if !version_exists {
         submit_to_google_form(client, version).await;
@@ -159,16 +172,15 @@ async fn check_version_and_submit(client: &Client, version: &str) {
 }
 
 enum SearchMessage {
-    Progress(u64, u64),
     Result(String, Platform),
     Complete(String),
     VersionStart(String, usize, usize),
     CompleteAll,
 }
 
-async fn search_installers(
-    client: &Client,
-    version: &str,
+struct SearchOptions {
+    client: Client,
+    version: String,
     start: i32,
     end: i32,
     platforms: Vec<Platform>,
@@ -176,45 +188,59 @@ async fn search_installers(
     tx: Sender<SearchMessage>,
     pause_flag: Arc<AtomicBool>,
     cancel_flag: Arc<AtomicBool>,
-) {
+    processed: Arc<AtomicU64>,
+}
+
+async fn search_installers(opts: SearchOptions) {
     use tokio::sync::Semaphore;
 
-    let total = ((end - start + 1) * platforms.len() as i32) as u64;
-    let semaphore = Arc::new(Semaphore::new(max_connections));
+    let semaphore = Arc::new(Semaphore::new(opts.max_connections));
     let mut tasks = Vec::new();
-    let processed = Arc::new(Mutex::new(0u64));
 
-    for platform in platforms {
-        for number in start..=end {
-            let url = UrlGenerator::generate_url(platform, version, number);
-            let client = client.clone();
-            let permit = semaphore.clone().acquire_owned().await.unwrap();
-            let tx_clone = tx.clone();
-            let processed_clone = processed.clone();
-            let pause_local = pause_flag.clone();
-            let cancel_local = cancel_flag.clone();
+    'outer: for platform in opts.platforms {
+        for number in opts.start..=opts.end {
+            if opts.cancel_flag.load(Ordering::Relaxed) {
+                break 'outer;
+            }
+
+            while opts.pause_flag.load(Ordering::Relaxed) {
+                if opts.cancel_flag.load(Ordering::Relaxed) {
+                    break 'outer;
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+            }
+
+            let permit = match semaphore.clone().acquire_owned().await {
+                Ok(p) => p,
+                Err(_) => break 'outer,
+            };
+
+            while opts.pause_flag.load(Ordering::Relaxed) {
+                if opts.cancel_flag.load(Ordering::Relaxed) {
+                    break 'outer;
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+            }
+
+            if opts.cancel_flag.load(Ordering::Relaxed) {
+                break 'outer;
+            }
+
+            let url = UrlGenerator::generate_url(platform, &opts.version, number);
+            let client = opts.client.clone();
+            let tx_clone = opts.tx.clone();
+            let processed_clone = opts.processed.clone();
+            let cancel_local = opts.cancel_flag.clone();
 
             let task = tokio::spawn(async move {
+                let _permit = permit;
+
                 if cancel_local.load(Ordering::Relaxed) {
                     return;
                 }
 
-                while pause_local.load(Ordering::Relaxed) {
-                    if cancel_local.load(Ordering::Relaxed) {
-                        return;
-                    }
-                    tokio::time::sleep(std::time::Duration::from_millis(200)).await;
-                }
-
                 let result = check_url(&client, url, platform).await;
-                drop(permit);
-
-                let mut p = processed_clone.lock().unwrap();
-                *p += 1;
-                let current = *p;
-                drop(p);
-
-                let _ = tx_clone.send(SearchMessage::Progress(current, total));
+                processed_clone.fetch_add(1, Ordering::Relaxed);
 
                 if let Some((url, platform)) = result {
                     let _ = tx_clone.send(SearchMessage::Result(url, platform));
@@ -225,11 +251,17 @@ async fn search_installers(
         }
     }
 
+    if opts.cancel_flag.load(Ordering::Relaxed) {
+        for task in &tasks {
+            task.abort();
+        }
+    }
+
     for task in tasks {
         let _ = task.await;
     }
 
-    let _ = tx.send(SearchMessage::Complete(version.to_string()));
+    let _ = opts.tx.send(SearchMessage::Complete(opts.version));
 }
 
 struct SpotifyFinderApp {
@@ -247,7 +279,6 @@ struct SpotifyFinderApp {
 
     report_unknown: bool,
 
-    search_results: String,
     is_searching: bool,
     is_paused: bool,
     displayed_results: String,
@@ -262,7 +293,8 @@ struct SpotifyFinderApp {
     progress: f32,
     progress_text: String,
     total_work: u64,
-    processed_global: u64,
+
+    processed_global: Arc<AtomicU64>,
 
     rx: Option<Receiver<SearchMessage>>,
     found_urls: HashMap<Platform, Vec<String>>,
@@ -284,7 +316,6 @@ impl Default for SpotifyFinderApp {
             platform_macos_intel: false,
             platform_macos_arm64: false,
             report_unknown: false,
-            search_results: String::new(),
             is_searching: false,
             is_paused: false,
             displayed_results: String::new(),
@@ -296,7 +327,7 @@ impl Default for SpotifyFinderApp {
             progress: 0.0,
             progress_text: String::new(),
             total_work: 0,
-            processed_global: 0,
+            processed_global: Arc::new(AtomicU64::new(0)),
             rx: None,
             found_urls: HashMap::new(),
             pause_flag: Arc::new(AtomicBool::new(false)),
@@ -309,7 +340,6 @@ impl Default for SpotifyFinderApp {
 }
 
 impl SpotifyFinderApp {
-    // Improved reveal logic: finish current item immediately and fast-forward the queue
     fn advance_reveal(&mut self) {
         if self.current_reveal.is_some() && !self.reveal_queue.is_empty() {
             if let Some(cur) = self.current_reveal.take() {
@@ -436,7 +466,6 @@ impl SpotifyFinderApp {
         self.is_searching = true;
         self.progress = 0.0;
         self.progress_text = "Starting...".to_string();
-        self.search_results.clear();
         self.displayed_results.clear();
         self.reveal_queue.clear();
         self.current_reveal = None;
@@ -451,13 +480,15 @@ impl SpotifyFinderApp {
             let per_version = ((end - start + 1) * cnt as i32) as u64;
             total_work_calc = total_work_calc.saturating_add(per_version);
         }
+
         self.total_work = total_work_calc;
-        self.processed_global = 0;
+        self.processed_global.store(0, Ordering::Relaxed);
+
         self.current_version = None;
         self.current_version_index = 0;
         self.total_versions = versions.len();
 
-        let (tx, rx) = channel();
+        let (tx, rx): (Sender<SearchMessage>, Receiver<SearchMessage>) = unbounded();
         self.rx = Some(rx);
 
         self.pause_flag.store(false, Ordering::Relaxed);
@@ -469,6 +500,7 @@ impl SpotifyFinderApp {
         let pause = self.pause_flag.clone();
         let cancel = self.cancel_flag.clone();
         let base_platforms_for_spawn = base_platforms.clone();
+        let processed_for_spawn = self.processed_global.clone();
 
         self.runtime.spawn(async move {
             let client = Client::builder()
@@ -502,17 +534,18 @@ impl SpotifyFinderApp {
                     continue;
                 }
 
-                search_installers(
-                    &client,
-                    &version,
+                search_installers(SearchOptions {
+                    client: client.clone(),
+                    version,
                     start,
                     end,
-                    platforms_for_version,
-                    max_conn,
-                    tx.clone(),
-                    pause.clone(),
-                    cancel.clone(),
-                )
+                    platforms: platforms_for_version,
+                    max_connections: max_conn,
+                    tx: tx.clone(),
+                    pause_flag: pause.clone(),
+                    cancel_flag: cancel.clone(),
+                    processed: processed_for_spawn.clone(),
+                })
                 .await;
 
                 if cancel.load(Ordering::Relaxed) {
@@ -534,7 +567,6 @@ impl SpotifyFinderApp {
     }
 
     fn clear_results(&mut self) {
-        self.search_results.clear();
         self.displayed_results.clear();
         self.reveal_queue.clear();
         self.current_reveal = None;
@@ -542,49 +574,49 @@ impl SpotifyFinderApp {
         self.progress = 0.0;
         self.progress_text.clear();
         self.total_work = 0;
-        self.processed_global = 0;
+        self.processed_global.store(0, Ordering::Relaxed);
     }
 
     fn update_search_progress(&mut self) {
+        let current_processed = self.processed_global.load(Ordering::Relaxed);
+        let denom = if self.total_work == 0 {
+            1
+        } else {
+            self.total_work
+        };
+        self.progress = current_processed as f32 / denom as f32;
+
+        if let Some(v) = &self.current_version {
+            let short = short_version(v);
+            if self.total_versions > 1 {
+                self.progress_text = format!(
+                    "Checking: {}/{}, Version: {}, No. {}/{}",
+                    current_processed,
+                    denom,
+                    short,
+                    self.current_version_index,
+                    self.total_versions
+                );
+            } else {
+                self.progress_text = format!(
+                    "Checking: {}/{}, Version: {}",
+                    current_processed, denom, short
+                );
+            }
+        } else if self.is_searching {
+            self.progress_text = format!("Checking: {}/{}", current_processed, denom);
+        }
+
         if let Some(rx_owned) = self.rx.take() {
-            let rx = rx_owned;
             let mut completed = false;
+            let mut processed_this_frame = 0;
 
-            while let Ok(msg) = rx.try_recv() {
+            while let Ok(msg) = rx_owned.try_recv() {
+                processed_this_frame += 1;
+
                 match msg {
-                    SearchMessage::Progress(_current, _total) => {
-                        self.processed_global = self.processed_global.saturating_add(1);
-                        let denom = if self.total_work == 0 {
-                            1
-                        } else {
-                            self.total_work
-                        };
-                        self.progress = self.processed_global as f32 / denom as f32;
-
-                        if let Some(v) = &self.current_version {
-                            let short = short_version(v);
-                            if self.total_versions > 1 {
-                                self.progress_text = format!(
-                                    "Checking: {}/{}, Version: {}, No. {}/{}",
-                                    self.processed_global,
-                                    denom,
-                                    short,
-                                    self.current_version_index,
-                                    self.total_versions
-                                );
-                            } else {
-                                self.progress_text = format!(
-                                    "Checking: {}/{}, Version: {}",
-                                    self.processed_global, denom, short
-                                );
-                            }
-                        } else {
-                            self.progress_text =
-                                format!("Checking: {}/{}", self.processed_global, denom);
-                        }
-                    }
                     SearchMessage::Result(url, platform) => {
-                        let entry = self.found_urls.entry(platform).or_insert_with(Vec::new);
+                        let entry = self.found_urls.entry(platform).or_default();
                         let first = entry.is_empty();
                         entry.push(url.clone());
 
@@ -626,10 +658,14 @@ impl SpotifyFinderApp {
                         completed = true;
                     }
                 }
+
+                if processed_this_frame > 1000 && !completed {
+                    break;
+                }
             }
 
             if !completed {
-                self.rx = Some(rx);
+                self.rx = Some(rx_owned);
             }
         }
     }
@@ -954,15 +990,13 @@ impl eframe::App for SpotifyFinderApp {
                             self.is_paused = false;
                             self.pause_flag.store(false, Ordering::Relaxed);
                         }
-                    } else {
-                        if ui
-                            .add_sized(btn_size, egui::Button::new("⏸ Pause"))
-                            .clicked()
-                        {
-                            self.is_paused = true;
-                            self.pause_flag.store(true, Ordering::Relaxed);
-                            self.progress_text = "Paused".to_string();
-                        }
+                    } else if ui
+                        .add_sized(btn_size, egui::Button::new("⏸ Pause"))
+                        .clicked()
+                    {
+                        self.is_paused = true;
+                        self.pause_flag.store(true, Ordering::Relaxed);
+                        self.progress_text = "Paused".to_string();
                     }
 
                     if ui
@@ -971,13 +1005,11 @@ impl eframe::App for SpotifyFinderApp {
                     {
                         self.stop_search();
                     }
-                } else {
-                    if ui
-                        .add_sized(btn_size, egui::Button::new("▶ Start Search"))
-                        .clicked()
-                    {
-                        self.start_search();
-                    }
+                } else if ui
+                    .add_sized(btn_size, egui::Button::new("▶ Start Search"))
+                    .clicked()
+                {
+                    self.start_search();
                 }
 
                 ui.add_enabled_ui(!self.is_searching, |ui| {
