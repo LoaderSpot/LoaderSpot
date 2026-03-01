@@ -1,4 +1,19 @@
 {
+  "1.2.85.301": {
+    "buildType": "Master",
+    "fullversion": "1.2.85.301.g1a6ed5dd",
+    "links": {
+      "win": {
+        "x86": "",
+        "x64": "https://upgrade.scdn.co/upgrade/client/win32-x86_64/spotify_installer-1.2.85.301.g1a6ed5dd-2730.exe",
+        "arm64": "https://upgrade.scdn.co/upgrade/client/win32-arm64/spotify_installer-1.2.85.301.g1a6ed5dd-2731.exe"
+      },
+      "mac": {
+        "intel": "https://upgrade.scdn.co/upgrade/client/osx-x86_64/spotify-autoupdate-1.2.85.301.g1a6ed5dd-2734.tbz",
+        "arm64": "https://upgrade.scdn.co/upgrade/client/osx-arm64/spotify-autoupdate-1.2.85.301.g1a6ed5dd-2733.tbz"
+      }
+    }
+  },
   "1.2.85.293": {
     "buildType": "Master",
     "fullversion": "1.2.85.293.gb38c1e46",
