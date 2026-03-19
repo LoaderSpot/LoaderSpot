@@ -1,13 +1,15 @@
 name: Sync files to table
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'versions.json'
-      - 'versions_deb.json'
-  workflow_dispatch:    
+  # Temporarily disabled automatic sync trigger.
+  # Uncomment this block to restore automatic runs on push to main.
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'versions.json'
+  #     - 'versions_deb.json'
+  workflow_dispatch:
 
 jobs:
   sync-files:
